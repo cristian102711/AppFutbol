@@ -1,192 +1,166 @@
-package com.example.uinavegacion.viewmodel // Make sure the package matches
+package com.example.uinavegacion.viewmodel
 
-import android.util.Log // For printing logs during simulation
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-// Import the validation functions we created
 import com.example.uinavegacion.domain.validation.*
-import kotlinx.coroutines.delay // To simulate network calls
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch // For running background tasks
+import kotlinx.coroutines.launch
 
-// --- Data class to simulate a user in our "database" ---
-private data class User(val email: String, val pass: String)
+// --- Data class para simular un usuario ---
+// Ahora incluye el nombre
+private data class User(val name: String, val email: String, val pass: String)
 
-// --- States to communicate registration progress/results to the UI ---
-sealed class RegistrationState {
-    object Idle : RegistrationState()      // Initial state
-    object Loading : RegistrationState()   // Registration in progress
-    data class Success(val message: String) : RegistrationState() // Success with a message
-    data class Error(val message: String) : RegistrationState()   // Failure with a message
+// --- Estados (RegistrationState y LoginState sin cambios) ---
+sealed class RegistrationState { /* ... sin cambios ... */
+    object Idle : RegistrationState(); object Loading : RegistrationState()
+    data class Success(val message: String) : RegistrationState()
+    data class Error(val message: String) : RegistrationState()
+}
+sealed class LoginState { /* ... sin cambios ... */
+    object Idle : LoginState(); object Loading : LoginState()
+    data class Success(val message: String) : LoginState()
+    data class Error(val message: String) : LoginState()
 }
 
-// --- States to communicate login progress/results to the UI ---
-sealed class LoginState {
-    object Idle : LoginState()         // Initial state
-    object Loading : LoginState()      // Login in progress
-    data class Success(val message: String) : LoginState() // Success with a message
-    data class Error(val message: String) : LoginState()   // Failure with a message
-}
-
-
-// --- The ViewModel itself ---
 class AuthViewModel : ViewModel() {
 
-    // --- Simulated User Database (in-memory list) ---
+    // --- Base de datos simulada ---
     private val _registeredUsers = mutableListOf<User>()
 
-    // --- STATE for REGISTER screen ---
+    // --- NUEVO: Estado para el nombre del usuario actual ---
+    var currentUserName by mutableStateOf<String?>(null); private set
+
+    // --- ESTADO para REGISTRO (sin cambios en variables, solo en registerUser) ---
     var name by mutableStateOf(""); private set
     var nameError by mutableStateOf<String?>(null); private set
-
     var registerEmail by mutableStateOf(""); private set
     var registerEmailError by mutableStateOf<String?>(null); private set
-
     var registerPassword by mutableStateOf(""); private set
     var registerPasswordError by mutableStateOf<String?>(null); private set
-
     var confirmPassword by mutableStateOf(""); private set
     var confirmPasswordError by mutableStateOf<String?>(null); private set
-
-    // StateFlow to report registration status back to the UI
     private val _registrationState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
     val registrationState = _registrationState.asStateFlow()
 
-
-    // --- STATE for LOGIN screen ---
+    // --- ESTADO para LOGIN (sin cambios) ---
     var loginEmail by mutableStateOf(""); private set
     var loginEmailError by mutableStateOf<String?>(null); private set
-
     var loginPassword by mutableStateOf(""); private set
     var loginPasswordError by mutableStateOf<String?>(null); private set
-
-    // StateFlow to report login status back to the UI
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState = _loginState.asStateFlow()
 
-
-    // --- FUNCTIONS called by the UI when user types ---
+    // --- FUNCIONES onValueChanged (sin cambios) ---
     fun onNameChanged(n: String) { name = n; nameError = validateNameLettersOnly(n) }
     fun onRegisterEmailChanged(e: String) { registerEmail = e; registerEmailError = validateEmail(e) }
-    fun onRegisterPasswordChanged(p: String) {
+    fun onRegisterPasswordChanged(p: String) { /* ... sin cambios ... */
         registerPassword = p
         registerPasswordError = validateStrongPass(p)
-        // Re-validate confirmation if it was already typed
         if (confirmPassword.isNotEmpty()) {
             confirmPasswordError = validateConfirm(p, confirmPassword)
         }
     }
     fun onConfirmPasswordChanged(c: String) { confirmPassword = c; confirmPasswordError = validateConfirm(registerPassword, c) }
-    fun onLoginEmailChanged(e: String) { loginEmail = e; loginEmailError = null /* Clear error on type */ }
-    fun onLoginPasswordChanged(p: String) { loginPassword = p; loginPasswordError = null /* Clear error on type */ }
+    fun onLoginEmailChanged(e: String) { loginEmail = e; loginEmailError = null }
+    fun onLoginPasswordChanged(p: String) { loginPassword = p; loginPasswordError = null }
 
+    // --- LÓGICA PRINCIPAL ---
 
-    // --- CORE LOGIC FUNCTIONS ---
-
-    /** Initiates the user registration process. */
     fun registerUser() {
-        // 1. Run final validation on all fields
         if (!validateRegistrationForm()) {
             _registrationState.value = RegistrationState.Error("Por favor, corrige los errores.")
-            return // Stop if validation fails
+            return
         }
-        // 2. Check if email is already taken (case-insensitive)
         if (_registeredUsers.any { it.email.equals(registerEmail, ignoreCase = true) }) {
             _registrationState.value = RegistrationState.Error("Este correo electrónico ya está en uso.")
-            return // Stop if email exists
+            return
         }
-
-        // 3. Start background task for registration
         viewModelScope.launch {
-            _registrationState.value = RegistrationState.Loading // Inform UI we are loading
-            delay(1500) // Simulate network delay
-
-            // 4. SIMULATE SUCCESS: Add user to our list
-            val newUser = User(email = registerEmail, pass = registerPassword)
+            _registrationState.value = RegistrationState.Loading
+            delay(1500)
+            // GUARDAMOS EL NOMBRE al registrar
+            val newUser = User(name = name.trim(), email = registerEmail, pass = registerPassword)
             _registeredUsers.add(newUser)
-            Log.d("AuthViewModel", "Usuario registrado: $newUser. Total: ${_registeredUsers.size}") // Log for debugging
-
-            // 5. Clean up and report success
+            Log.d("AuthViewModel", "Usuario registrado: $newUser. Total: ${_registeredUsers.size}")
             clearRegistrationFields()
             _registrationState.value = RegistrationState.Success("¡Cuenta creada con éxito!")
         }
     }
 
-    /** Initiates the user login process. */
     fun loginUser() {
-        // 1. Validate input fields
-        val emailErr = validateEmail(loginEmail)
-        val passErr = validateLoginPassword(loginPassword)
-        loginEmailError = emailErr // Update errors for UI
-        loginPasswordError = passErr
-
-        // 2. Stop if basic validation fails
+        val emailErr = validateEmail(loginEmail); val passErr = validateLoginPassword(loginPassword)
+        loginEmailError = emailErr; loginPasswordError = passErr
         if (emailErr != null || passErr != null) {
             _loginState.value = LoginState.Error("Por favor, completa los campos.")
             return
         }
-
-        // 3. Start background task for login
         viewModelScope.launch {
-            _loginState.value = LoginState.Loading // Inform UI we are loading
-            delay(1500) // Simulate network delay
-
-            // 4. SIMULATE AUTHENTICATION: Check user exists and password matches
+            _loginState.value = LoginState.Loading
+            delay(1500)
             val user = _registeredUsers.find { it.email.equals(loginEmail, ignoreCase = true) }
-
             if (user != null && user.pass == loginPassword) {
-                // SUCCESS
-                Log.d("AuthViewModel", "Inicio de sesión exitoso para: ${user.email}")
+                // GUARDAMOS EL NOMBRE DEL USUARIO al iniciar sesión
+                currentUserName = user.name
+                Log.d("AuthViewModel", "Inicio de sesión exitoso para: ${user.email}, Nombre: $currentUserName")
                 _loginState.value = LoginState.Success("¡Inicio de sesión exitoso!")
             } else {
-                // FAILURE
+                currentUserName = null // Limpiamos el nombre si falla
                 Log.d("AuthViewModel", "Fallo de inicio de sesión para: $loginEmail")
                 _loginState.value = LoginState.Error("Usuario no registrado o contraseña incorrecta.")
             }
         }
     }
 
+    // --- NUEVA FUNCIÓN: Login como Invitado ---
+    /** Simula el inicio de sesión como invitado. */
+    fun loginAsGuest() {
+        // Establece el nombre de usuario como "Invitado"
+        currentUserName = "Invitado"
+        Log.d("AuthViewModel", "Inicio de sesión como invitado.")
+        // (Opcional) Podrías emitir un LoginState.Success si quisieras mostrar un Snackbar
+        // _loginState.value = LoginState.Success("Bienvenido Invitado")
+    }
 
-    // --- HELPER FUNCTIONS ---
+    // --- NUEVA FUNCIÓN: Logout ---
+    /** Cierra la sesión del usuario actual. */
+    fun logoutUser() {
+        // Limpia el nombre del usuario actual
+        currentUserName = null
+        // Limpia los campos de login por si acaso
+        clearLoginFields()
+        // Resetea los estados de login/registro
+        resetLoginState()
+        resetRegistrationState()
+        Log.d("AuthViewModel", "Usuario cerró sesión.")
+    }
 
-    /** Clears the login input fields and errors. */
-    fun clearLoginFields() {
+
+    // --- FUNCIONES AUXILIARES (sin cambios en reset, clearFields, validate) ---
+    fun clearLoginFields() { /* ... sin cambios ... */
         loginEmail = ""
         loginPassword = ""
         loginEmailError = null
         loginPasswordError = null
     }
-
-    /** Resets the login state to Idle (used after showing a message). */
-    fun resetLoginState() {
-        _loginState.value = LoginState.Idle
-    }
-
-    /** Resets the registration state to Idle (used after showing a message). */
-    fun resetRegistrationState() {
-        _registrationState.value = RegistrationState.Idle
-    }
-
-    /** Clears all registration input fields and errors. */
-    private fun clearRegistrationFields() {
+    fun resetLoginState() { _loginState.value = LoginState.Idle }
+    fun resetRegistrationState() { _registrationState.value = RegistrationState.Idle }
+    private fun clearRegistrationFields() { /* ... sin cambios ... */
         name = ""; nameError = null
         registerEmail = ""; registerEmailError = null
         registerPassword = ""; registerPasswordError = null
         confirmPassword = ""; confirmPasswordError = null
     }
-
-    /** Runs validation on all registration fields and updates error states. Returns true if valid. */
-    private fun validateRegistrationForm(): Boolean {
-        // Trigger validation (and update error states) for all fields
+    private fun validateRegistrationForm(): Boolean { /* ... sin cambios ... */
         onNameChanged(name)
         onRegisterEmailChanged(registerEmail)
         onRegisterPasswordChanged(registerPassword)
         onConfirmPasswordChanged(confirmPassword)
-        // Return true only if ALL error states are null
         return nameError == null &&
                 registerEmailError == null &&
                 registerPasswordError == null &&

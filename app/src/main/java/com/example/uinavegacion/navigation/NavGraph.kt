@@ -1,49 +1,48 @@
-package com.example.uinavegacion.navigation // Asegúrate que el paquete coincida
+package com.example.uinavegacion.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+
+// --- Imports de las pantallas que SÍ existen ---
 import com.example.uinavegacion.ui.screen.HomeScreen
 import com.example.uinavegacion.ui.screen.LoginScreen
 import com.example.uinavegacion.ui.screen.RegisterScreen
+import com.example.uinavegacion.ui.screen.CreateTeamScreen
 import com.example.uinavegacion.viewmodel.AuthViewModel
+import com.example.uinavegacion.viewmodel.CreateTeamViewModel
 
-/**
- * Define el grafo de navegación de la aplicación.
- *
- * @param navController El controlador que maneja la navegación entre pantallas.
- * @param authViewModel El ViewModel compartido entre las pantallas de autenticación.
- */
 @Composable
 fun NavGraph(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-    // NavHost es el contenedor que muestra la pantalla actual
     NavHost(
         navController = navController,
-        startDestination = Route.Login.path // La app siempre inicia en el Login
+        startDestination = Route.Login.path
     ) {
-        // Define la pantalla de Login
+        // --- Pantallas de Autenticación (funcionan) ---
         composable(route = Route.Login.path) {
-            // Llama al Composable de LoginScreen, pasándole el NavController y el ViewModel
             LoginScreen(navController = navController, authViewModel = authViewModel)
         }
-
-        // Define la pantalla de Registro
         composable(route = Route.Register.path) {
-            // Llama al Composable de RegisterScreen
             RegisterScreen(navController = navController, authViewModel = authViewModel)
         }
-
-        // Define la pantalla Home
         composable(route = Route.Home.path) {
-            // Llama al Composable de HomeScreen
             HomeScreen(navController = navController, authViewModel = authViewModel)
         }
 
-        // Puedes añadir más pantallas aquí en el futuro
-        // composable("profile") { ProfileScreen(...) }
+        // --- Hemos borrado los composables rotos de CreateMatch y MyMatches ---
+
+        // --- Pantalla de Crear Equipo (nueva) ---
+        composable(route = Route.CreateTeam.path) {
+            val createTeamViewModel: CreateTeamViewModel = viewModel()
+            CreateTeamScreen( // <-- Este dará error
+                navController = navController,
+                viewModel = createTeamViewModel
+            )
+        }
     }
 }

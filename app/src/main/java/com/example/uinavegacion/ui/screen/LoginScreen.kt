@@ -1,6 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class) // Needed for Material 3 components
+@file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.uinavegacion.ui.screen // Make sure the package matches
+package com.example.uinavegacion.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,7 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.* // Needed for remember, mutableStateOf, collectAsState, LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,13 +19,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController // Needed for navigation
-import com.example.uinavegacion.navigation.Route // Import our defined routes
-import com.example.uinavegacion.ui.theme.GrisComponente // Import custom colors
+import androidx.navigation.NavController
+import com.example.uinavegacion.navigation.Route
+import com.example.uinavegacion.ui.theme.GrisComponente
 import com.example.uinavegacion.ui.theme.TextoGris
 import com.example.uinavegacion.ui.theme.VerdePrincipal
-import com.example.uinavegacion.viewmodel.AuthViewModel // Import our ViewModel
-import com.example.uinavegacion.viewmodel.LoginState // Import the LoginState sealed class
+import com.example.uinavegacion.viewmodel.AuthViewModel
+import com.example.uinavegacion.viewmodel.LoginState
 
 @Composable
 fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
@@ -41,7 +41,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                     duration = SnackbarDuration.Short
                 )
                 navController.navigate(Route.Home.path) {
-                    popUpTo(0) // Clears all previous screens
+                    popUpTo(0)
                 }
                 authViewModel.resetLoginState()
             }
@@ -73,7 +73,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Bienvenido de nuevo",
+                    text = "Bienvenido a App Futbol",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -89,6 +89,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 OutlinedTextField(
                     value = authViewModel.loginEmail,
                     onValueChange = { authViewModel.onLoginEmailChanged(it) },
+                    // ... (resto de propiedades sin cambios)
                     label = { Text("Email") },
                     isError = authViewModel.loginEmailError != null,
                     supportingText = {
@@ -118,6 +119,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 OutlinedTextField(
                     value = authViewModel.loginPassword,
                     onValueChange = { authViewModel.onLoginPasswordChanged(it) },
+                    // ... (resto de propiedades sin cambios)
                     label = { Text("Contraseña") },
                     isError = authViewModel.loginPasswordError != null,
                     supportingText = {
@@ -147,6 +149,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 // Login Button (sin cambios)
                 Button(
                     onClick = { authViewModel.loginUser() },
+                    // ... (resto de propiedades sin cambios)
                     enabled = loginState !is LoginState.Loading,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -173,15 +176,25 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Botón para Ingresar como invitado
-                TextButton(
+                Button( // <-- Cambiado de TextButton a Button
                     onClick = {
-                        // Navega a Home y limpia todo el historial de navegación
+                        authViewModel.loginAsGuest()
                         navController.navigate(Route.Home.path) {
-                            popUpTo(0) // Borra todas las pantallas anteriores de la pila
+                            popUpTo(0)
                         }
-                    }
+                    },
+                    // Aplicamos el mismo estilo que el botón "Entrar"
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = VerdePrincipal, // Fondo verde principal
+                        contentColor = Color.Black        // Texto negro
+                    )
                 ) {
-                    Text("Ingresar como invitado", color = TextoGris)
+                    // Texto con el mismo estilo
+                    Text("Ingresar como invitado", fontWeight = FontWeight.Bold)
                 }
 
                 // --- FIN DE LA ACTUALIZACIÓN ---
