@@ -61,6 +61,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // --- LIBRERÍAS QUE SÍ USAMOS ---
+    // Librería para la Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.compose.material3:material3:1.2.1") // <-- Esta es la que arregla el error
     implementation("androidx.activity:activity-ktx:1.9.0")

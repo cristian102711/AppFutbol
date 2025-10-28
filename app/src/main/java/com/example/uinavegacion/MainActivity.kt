@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen // <-- IMPORT NUEVO
 import androidx.navigation.compose.rememberNavController
 import com.example.uinavegacion.navigation.NavGraph
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
@@ -19,6 +20,9 @@ class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // --- LLAMA A LA SPLASH SCREEN AQUÍ ---
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         setContent {
             UINavegacionTheme {
