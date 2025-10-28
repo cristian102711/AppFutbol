@@ -11,6 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import android.net.Uri
 
 // --- Data class para simular un usuario ---
 // Ahora incluye el nombre
@@ -29,6 +30,16 @@ sealed class LoginState { /* ... sin cambios ... */
 }
 
 class AuthViewModel : ViewModel() {
+
+    // --- AÑADE ESTA LÍNEA ---
+    /** Guarda la URI (dirección) de la foto de perfil seleccionada. */
+    var profileImageUri by mutableStateOf<Uri?>(null)
+        private set
+
+    // --- AÑADE ESTA FUNCIÓN ---
+    fun onProfileImageSelected(uri: Uri?) {
+        profileImageUri = uri
+    }
 
     // --- Base de datos simulada ---
     private val _registeredUsers = mutableListOf<User>()

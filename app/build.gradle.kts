@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
 
+
     // --- LÍNEA PROBLEMÁTICA COMENTADA ---
     // implementation(libs.androidx.compose.material3)
 
@@ -60,6 +61,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // --- LIBRERÍAS QUE SÍ USAMOS ---
+    implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.compose.material3:material3:1.2.1") // <-- Esta es la que arregla el error
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.navigation:navigation-compose:2.9.5")
