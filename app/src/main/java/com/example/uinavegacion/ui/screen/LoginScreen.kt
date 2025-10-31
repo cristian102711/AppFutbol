@@ -2,6 +2,13 @@
 
 package com.example.uinavegacion.ui.screen
 
+// --- IMPORTS AÑADIDOS ---
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.uinavegacion.R
+// ------------------------
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -26,6 +33,7 @@ import com.example.uinavegacion.ui.theme.TextoGris
 import com.example.uinavegacion.ui.theme.VerdePrincipal
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.LoginState
+
 
 @Composable
 fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
@@ -72,8 +80,23 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                // --- INICIO DE LA ACTUALIZACIÓN ---
+
+                // 1. Añadimos el nuevo logo aquí
+                Image(
+                    // Asegúrate de que tu logo se llame 'ic_app_logo.png' en 'res/drawable'
+                    painter = painterResource(id = R.drawable.ic_app_logo),
+                    contentDescription = "Logo de Soccer Match",
+                    modifier = Modifier
+                        .width(180.dp) // Le damos un buen tamaño
+                        .padding(bottom = 16.dp), // Espacio entre el logo y el texto
+                    contentScale = ContentScale.Fit // Esto evita que se recorte
+                )
+
+                // 2. Mantenemos tus textos de bienvenida (con el nombre actualizado)
                 Text(
-                    text = "Bienvenido a App Futbol",
+                    text = "Bienvenido a Next Match",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -85,11 +108,13 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 )
                 Spacer(modifier = Modifier.height(48.dp))
 
+                // --- FIN DE LA ACTUALIZACIÓN ---
+
+
                 // Email TextField (sin cambios)
                 OutlinedTextField(
                     value = authViewModel.loginEmail,
                     onValueChange = { authViewModel.onLoginEmailChanged(it) },
-                    // ... (resto de propiedades sin cambios)
                     label = { Text("Email") },
                     isError = authViewModel.loginEmailError != null,
                     supportingText = {
@@ -119,7 +144,6 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 OutlinedTextField(
                     value = authViewModel.loginPassword,
                     onValueChange = { authViewModel.onLoginPasswordChanged(it) },
-                    // ... (resto de propiedades sin cambios)
                     label = { Text("Contraseña") },
                     isError = authViewModel.loginPasswordError != null,
                     supportingText = {
@@ -149,7 +173,6 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 // Login Button (sin cambios)
                 Button(
                     onClick = { authViewModel.loginUser() },
-                    // ... (resto de propiedades sin cambios)
                     enabled = loginState !is LoginState.Loading,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,33 +194,27 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                     }
                 }
 
-                // --- INICIO DE LA ACTUALIZACIÓN ---
-
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Botón para Ingresar como invitado
-                Button( // <-- Cambiado de TextButton a Button
+                // Botón para Ingresar como invitado (sin cambios)
+                Button(
                     onClick = {
                         authViewModel.loginAsGuest()
                         navController.navigate(Route.Home.path) {
                             popUpTo(0)
                         }
                     },
-                    // Aplicamos el mismo estilo que el botón "Entrar"
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = VerdePrincipal, // Fondo verde principal
-                        contentColor = Color.Black        // Texto negro
+                        containerColor = VerdePrincipal,
+                        contentColor = Color.Black
                     )
                 ) {
-                    // Texto con el mismo estilo
                     Text("Ingresar como invitado", fontWeight = FontWeight.Bold)
                 }
-
-                // --- FIN DE LA ACTUALIZACIÓN ---
 
             } // Fin de la Column
 
