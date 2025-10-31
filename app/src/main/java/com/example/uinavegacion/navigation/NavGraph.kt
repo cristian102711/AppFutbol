@@ -13,6 +13,10 @@ import com.example.uinavegacion.ui.screen.RegisterScreen
 import com.example.uinavegacion.ui.screen.CreateTeamScreen
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.CreateTeamViewModel
+import com.example.uinavegacion.ui.screen.MatchmakingScreen
+import com.example.uinavegacion.ui.screen.MatchmakingStartScreen
+import com.example.uinavegacion.ui.screen.AvailableTeamsScreen
+import com.example.uinavegacion.ui.screen.MatchFoundScreen
 
 @Composable
 fun NavGraph(
@@ -33,6 +37,19 @@ fun NavGraph(
         composable(route = Route.Home.path) {
             HomeScreen(navController = navController, authViewModel = authViewModel)
         }
+        composable(Route.MatchmakingStart.path) {
+            MatchmakingStartScreen(navController = navController)
+        }
+        composable(Route.Matchmaking.path) {
+            MatchmakingScreen(navController = navController)
+        }
+        composable(Route.AvailableTeams.path) {
+            AvailableTeamsScreen(navController = navController)
+        }
+        composable(Route.MatchFound.path) {
+            MatchFoundScreen(navController = navController)
+        }
+
 
         // --- Hemos borrado los composables rotos de CreateMatch y MyMatches ---
 
