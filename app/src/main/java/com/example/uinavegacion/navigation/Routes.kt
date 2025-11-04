@@ -9,12 +9,16 @@ sealed class Route(val path: String) {
     object Home : Route("home_screen")
     object CreateTeam : Route("create_team_screen")
     object Map : Route("map_screen")
-    object Stats : Route("stats_screen")
 
     // --- Flujo de Emparejamiento
     object MatchmakingStart : Route("matchmaking_start_screen")
     object Matchmaking : Route("matchmaking_screen")
     object AvailableTeams : Route("available_teams_screen")
 
-    object MatchFound : Route("match_found_screen")     // <-- Esta es la que sigue
+    object MatchFound : Route("match_found_screen")
+
+    object Chat : Route("chat_screen")
+    object Reservation : Route("reservation_screen")
+    object CreateMatch : Route("create_match_screen")
+    object CourtList : Route("court_list_screen")
 }

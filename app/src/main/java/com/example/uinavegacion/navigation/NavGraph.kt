@@ -17,6 +17,9 @@ import com.example.uinavegacion.ui.screen.MatchmakingScreen
 import com.example.uinavegacion.ui.screen.MatchmakingStartScreen
 import com.example.uinavegacion.ui.screen.AvailableTeamsScreen
 import com.example.uinavegacion.ui.screen.MatchFoundScreen
+import com.example.uinavegacion.ui.screen.ChatScreen
+import com.example.uinavegacion.ui.screen.ReservationScreen
+import com.example.uinavegacion.ui.screen.CreateMatchScreen
 
 @Composable
 fun NavGraph(
@@ -48,6 +51,15 @@ fun NavGraph(
         }
         composable(Route.MatchFound.path) {
             MatchFoundScreen(navController = navController)
+        }
+        composable(Route.Chat.path) {
+            ChatScreen(navController = navController)
+        }
+        composable(Route.Reservation.path) {
+            ReservationScreen(navController = navController)
+        }
+        composable(Route.CreateMatch.path) {
+            CreateMatchScreen(navController = navController)
         }
 
 

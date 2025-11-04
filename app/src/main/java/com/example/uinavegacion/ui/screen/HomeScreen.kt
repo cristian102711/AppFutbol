@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
 
 
+
 // --- Otros imports (Nuevos y existentes) ---
 import androidx.core.content.FileProvider
 import androidx.navigation.NavController
@@ -135,16 +136,14 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
             }
         ) { innerPadding ->
 
-            // --- ¡AQUÍ EMPIEZA EL NUEVO DISEÑO! ---
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding) // Padding de la BottomBar
-                    .verticalScroll(rememberScrollState()) // Hacemos que la pantalla sea scrolleable
-                    .padding(horizontal = 16.dp) // Padding lateral general
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp)
             ) {
 
-                // 1. Cabecera "Hola Cristian" (Reutilizamos tu composable)
                 HeaderProfile(
                     userName = currentUserName,
                     profileImageUri = authViewModel.profileImageUri,
@@ -155,7 +154,7 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 2. Fila de Botones de Acción
+                // 2. Fila de Botones de Acción (ACTUALIZADA)
                 ActionButtonsRow(navController = navController)
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -163,11 +162,10 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
                 // 3. Sección de "Próximos Partidos"
                 UpcomingMatchesSection(navController = navController)
 
-                Spacer(modifier = Modifier.height(24.dp)) // Espacio extra al final
+                Spacer(modifier = Modifier.height(24.dp))
             }
             // --- FIN DEL NUEVO DISEÑO ---
 
-            // El diálogo para cambiar la imagen sigue funcionando igual
             if (showImageDialog) {
                 ImagePickerDialog(
                     onDismiss = { showImageDialog = false },
@@ -193,7 +191,7 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
 }
 
 // ===================================================================
-// 2. COMPOSABLES DEL NUEVO DISEÑO
+// 2. COMPOSABLES DEL NUEVO DISEÑO (¡ACTUALIZADOS!)
 // ===================================================================
 
 @Composable
@@ -205,21 +203,21 @@ fun ActionButtonsRow(navController: NavController) {
         // Botón 1: Crear partido
         ActionButton(
             text = "Crear partido",
-            onClick = { /* TODO: Navegar a "Crear Partido" (pantalla futura) */ },
+            onClick = { navController.navigate(Route.CreateMatch.path) }, // <-- CAMBIO
             modifier = Modifier.weight(1f)
         )
 
         // Botón 2: Emparejamiento
         ActionButton(
             text = "Emparejamiento",
-            onClick = { navController.navigate(Route.MatchmakingStart.path) },
+            onClick = { navController.navigate(Route.MatchmakingStart.path) }, // <-- (Ya estaba bien)
             modifier = Modifier.weight(1f)
         )
 
         // Botón 3: Reservar cancha
         ActionButton(
             text = "Reservar cancha",
-            onClick = { /* TODO: Navegar a "Reservar Cancha" (pantalla futura) */ },
+            onClick = { navController.navigate(Route.Reservation.path) }, // <-- CAMBIO
             modifier = Modifier.weight(1f)
         )
     }
@@ -241,7 +239,7 @@ fun ActionButton(
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            fontSize = 12.sp, // Letra más pequeña para que quepa
+            fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             lineHeight = 14.sp
         )
@@ -259,15 +257,12 @@ fun UpcomingMatchesSection(navController: NavController) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // --- Lista de Partidos (Datos de ejemplo) ---
-        // (Más adelante, esto vendrá de un ViewModel)
-
         // Tarjeta 1
         MatchCard(
             teamName = "Los Galacticos FC",
             details = "Viernes 5 de junio - 19:30 hrs\nFutbolito Ñuñoa, Pedro de Valdivia",
             buttonText = "ver detalles",
-            isConfirmation = false, // Botón delineado
+            isConfirmation = false,
             onClick = { /* TODO: Navegar a detalles del partido */ }
         )
 
@@ -278,7 +273,7 @@ fun UpcomingMatchesSection(navController: NavController) {
             teamName = "Real Amigos FC vs Los Invencibles",
             details = "Viernes 5 de junio - 19:30 hrs\nFutbolito Ñuñoa, Pedro de Valdivia",
             buttonText = "confirmar",
-            isConfirmation = true, // Botón sólido
+            isConfirmation = true,
             onClick = { /* TODO: Lógica de confirmación */ }
         )
     }
@@ -313,29 +308,25 @@ fun MatchCard(
                 text = details,
                 color = TextoGris,
                 fontSize = 14.sp,
-                lineHeight = 20.sp // Mejoramos la legibilidad
+                lineHeight = 20.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón Condicional (sólido o delineado)
             Button(
                 onClick = onClick,
                 modifier = Modifier.align(Alignment.End),
                 shape = RoundedCornerShape(8.dp),
                 colors = if (isConfirmation) {
-                    // Botón Sólido (Confirmar)
                     ButtonDefaults.buttonColors(
                         containerColor = VerdePrincipal,
                         contentColor = Color.Black
                     )
                 } else {
-                    // Botón Delineado (Ver detalles)
                     ButtonDefaults.outlinedButtonColors(
                         containerColor = Color.Transparent,
                         contentColor = VerdePrincipal
                     )
                 },
-                // Añadimos borde solo si NO es de confirmación
                 border = if (!isConfirmation) BorderStroke(1.dp, VerdePrincipal) else null
             ) {
                 Text(buttonText, fontWeight = FontWeight.Bold, fontSize = 14.sp)
@@ -346,8 +337,7 @@ fun MatchCard(
 
 
 // ===================================================================
-// 3. COMPOSABLES ANTIGUOS (SIN CAMBIOS)
-// (Aquí van ImagePickerDialog, HeaderProfile, MyBottomBar, etc.)
+// 3. COMPOSABLES ANTIGUOS (SIN CAMBIOS... EXCEPTO EL MENÚ)
 // ===================================================================
 
 @Composable
@@ -407,7 +397,7 @@ private fun createImageUri(context: Context): Uri {
     )
     return FileProvider.getUriForFile(
         Objects.requireNonNull(context),
-        "com.example.uinavegacion.provider", // Asegúrate que coincida con tu Manifest
+        "com.example.uinavegacion.provider",
         imageFile
     )
 }
@@ -423,7 +413,6 @@ fun MenuItemRow(item: MenuItem, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -521,6 +510,9 @@ fun MyBottomBar(onMenuClick: () -> Unit) {
     }
 }
 
+// ===================================================================
+// ¡MENÚ LATERAL ACTUALIZADO!
+// ===================================================================
 @Composable
 fun AppDrawerContent(
     navController: NavController,
@@ -530,14 +522,14 @@ fun AppDrawerContent(
     val isGuest = authViewModel.currentUserName == "Invitado"
     val currentUserName = authViewModel.currentUserName ?: "Usuario"
 
+    // --- Lista de Menú ACTUALIZADA ---
+    // (Sin "Estadísticas" ni "Calificar")
     val dynamicMenuItems = buildList {
-        add(MenuItem("Ver estadísticas", Icons.Default.Analytics))
         add(MenuItem("Chat equipo", Icons.AutoMirrored.Filled.Chat))
         add(MenuItem("Reservar cancha", Icons.Default.CalendarToday))
         add(MenuItem("Emparejamiento automatico", Icons.Default.Shuffle))
         add(MenuItem("Ver Canchas", Icons.Default.LocationOn))
         add(MenuItem("Crear y Confirmar equipos", Icons.Default.Groups))
-        add(MenuItem("Calificar jugadores", Icons.Default.Star))
 
         if (isGuest) {
             add(MenuItem("Salir", Icons.AutoMirrored.Filled.ExitToApp, isDestructive = false))
@@ -551,7 +543,7 @@ fun AppDrawerContent(
             HeaderProfile(
                 userName = currentUserName,
                 profileImageUri = authViewModel.profileImageUri,
-                onProfileClick = {} // No hacer nada al clickear la foto en el drawer
+                onProfileClick = {}
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -573,20 +565,13 @@ fun AppDrawerContent(
             items(dynamicMenuItems) { item ->
                 MenuItemRow(item = item) {
                     onCloseDrawer()
+                    // --- NAVEGACIÓN DEL MENÚ ACTUALIZADA ---
                     when (item.title) {
                         "Crear y Confirmar equipos" -> navController.navigate(Route.CreateTeam.path)
-                        // "Ver Canchas" -> ... (Comentado)
-
-                        // Esto ya está arreglado en Route.kt
-                        "Ver estadísticas" -> navController.navigate(Route.Stats.path)
-
                         "Emparejamiento automatico" -> navController.navigate(Route.MatchmakingStart.path)
-
-                        // TODO: Conectar el resto de botones del menú
-                        // "Chat equipo" -> navController.navigate(...)
-                        // "Reservar cancha" -> navController.navigate(...)
-                        // "Emparejamiento automatico" -> navController.navigate(...)
-                        // "Calificar jugadores" -> navController.navigate(...)
+                        "Ver Canchas" -> navController.navigate(Route.CourtList.path)
+                        "Chat equipo" -> navController.navigate(Route.Chat.path)
+                        "Reservar cancha" -> navController.navigate(Route.Reservation.path)
 
                         "Cerrar Sesión", "Salir" -> {
                             authViewModel.logoutUser()
