@@ -2,53 +2,56 @@
 
 package com.example.uinavegacion.ui.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.SportsSoccer
+import androidx.compose.material.icons.filled.DateRange // <-- Ícono Seguro
+import androidx.compose.material.icons.filled.Place     // <-- Ícono Seguro
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.uinavegacion.ui.theme.GrisComponente
 import com.example.uinavegacion.ui.theme.TextoGris
 import com.example.uinavegacion.ui.theme.VerdePrincipal
+import com.example.uinavegacion.ui.screen.customTextFieldColors // Asegúrate de tener esto importado
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun CreateMatchScreen(navController: NavController) {
+fun BookingScreen(navController: NavController) {
 
-    // --- Estados del Formulario ---
-    var matchName by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
-    var time by remember { mutableStateOf("") }
+    // --- Datos de Ejemplo ---
+    val courts = listOf("Cancha 1 (Techada)", "Cancha 2 (Aire Libre)", "Cancha 3 (Futbolito)")
+    val timeSlots = listOf(
+        "09:00", "10:00", "11:00", "12:00",
+        "16:00", "17:00", "18:00", "19:00",
+        "20:00", "21:00", "22:00", "23:00"
+    )
 
-    // Estado Fecha
+    // --- Estados ---
+    var selectedCourt by remember { mutableStateOf("") }
+    var isCourtMenuExpanded by remember { mutableStateOf(false) }
+
     var selectedDate by remember { mutableStateOf("") }
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    // Estado Formato (Dropdown)
-    var selectedFormat by remember { mutableStateOf("") }
-    var isFormatExpanded by remember { mutableStateOf(false) }
-    val formats = listOf("Fútbol 5 (5v5)", "Fútbol 7 (7v7)", "Fútbol 11 (11v11)")
+    var selectedTimeSlot by remember { mutableStateOf<String?>(null) }
 
-    // Validar botón
-    val isButtonEnabled = matchName.isNotBlank() && location.isNotBlank() && selectedDate.isNotBlank() && selectedFormat.isNotBlank()
+    val isButtonEnabled = selectedCourt.isNotBlank() && selectedDate.isNotBlank() && selectedTimeSlot != null
 
     // --- Diálogo del Calendario ---
     if (showDatePicker) {
@@ -84,7 +87,7 @@ fun CreateMatchScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Crear Partido") },
+                title = { Text("Reservar Cancha") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
@@ -105,57 +108,38 @@ fun CreateMatchScreen(navController: NavController) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            Text(
-                text = "Organiza tu encuentro",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
 
-            // 1. Nombre del Partido
-            OutlinedTextField(
-                value = matchName,
-                onValueChange = { matchName = it },
-                label = { Text("Nombre del Partido") },
-                placeholder = { Text("Ej: Pichanga del Viernes") },
-                leadingIcon = { Icon(Icons.Default.SportsSoccer, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = customTextFieldColors(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
-            )
+            // 1. Selector de Cancha
+            Text("Selecciona la cancha:", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 2. Formato (Dropdown)
             ExposedDropdownMenuBox(
-                expanded = isFormatExpanded,
-                onExpandedChange = { isFormatExpanded = !isFormatExpanded }
+                expanded = isCourtMenuExpanded,
+                onExpandedChange = { isCourtMenuExpanded = !isCourtMenuExpanded }
             ) {
                 OutlinedTextField(
-                    value = selectedFormat,
+                    value = selectedCourt,
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Formato de juego") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isFormatExpanded) },
-                    leadingIcon = { Icon(Icons.Default.Groups, contentDescription = null) },
+                    placeholder = { Text("Elige una cancha") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isCourtMenuExpanded) },
+                    // CAMBIO: Usamos Place en vez de SportsSoccer
+                    leadingIcon = { Icon(Icons.Default.Place, contentDescription = null) },
                     modifier = Modifier.fillMaxWidth().menuAnchor(),
                     colors = customTextFieldColors(),
                     shape = RoundedCornerShape(12.dp)
                 )
                 ExposedDropdownMenu(
-                    expanded = isFormatExpanded,
-                    onDismissRequest = { isFormatExpanded = false },
+                    expanded = isCourtMenuExpanded,
+                    onDismissRequest = { isCourtMenuExpanded = false },
                     modifier = Modifier.background(GrisComponente)
                 ) {
-                    formats.forEach { format ->
+                    courts.forEach { court ->
                         DropdownMenuItem(
-                            text = { Text(format, color = Color.White) },
+                            text = { Text(court, color = Color.White) },
                             onClick = {
-                                selectedFormat = format
-                                isFormatExpanded = false
+                                selectedCourt = court
+                                isCourtMenuExpanded = false
                             },
                             colors = MenuDefaults.itemColors(textColor = Color.White)
                         )
@@ -165,14 +149,18 @@ fun CreateMatchScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 3. Fecha (Calendario)
+            // 2. Selector de Fecha
+            Text("Selecciona la fecha:", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+
             Box(modifier = Modifier.fillMaxWidth().clickable { showDatePicker = true }) {
                 OutlinedTextField(
                     value = selectedDate,
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Fecha") },
-                    leadingIcon = { Icon(Icons.Default.CalendarToday, contentDescription = null) },
+                    placeholder = { Text("DD/MM/AAAA") },
+                    // CAMBIO: Usamos DateRange
+                    leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = null) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = customTextFieldColors(),
                     shape = RoundedCornerShape(12.dp),
@@ -180,45 +168,44 @@ fun CreateMatchScreen(navController: NavController) {
                 )
             }
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 3. Selector de Hora (Cuadrícula)
+            Text("Horarios Disponibles:", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(timeSlots) { time ->
+                    val isSelected = (time == selectedTimeSlot)
+
+                    OutlinedButton(
+                        onClick = { selectedTimeSlot = time },
+                        shape = RoundedCornerShape(8.dp),
+                        border = if (isSelected) BorderStroke(1.dp, VerdePrincipal) else BorderStroke(1.dp, TextoGris),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = if (isSelected) VerdePrincipal else Color.Transparent,
+                            contentColor = if (isSelected) Color.Black else Color.White
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(time, fontWeight = FontWeight.SemiBold)
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 4. Hora Manual
-            OutlinedTextField(
-                value = time,
-                onValueChange = { time = it },
-                label = { Text("Hora (Ej: 20:00)") },
-                leadingIcon = { Icon(Icons.Default.Schedule, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = customTextFieldColors(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 5. Ubicación
-            OutlinedTextField(
-                value = location,
-                onValueChange = { location = it },
-                label = { Text("Ubicación / Cancha") },
-                leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = customTextFieldColors(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Botón Crear
+            // 4. Botón Confirmar
             Button(
-                onClick = {
-                    // TODO: Guardar partido en base de datos
-                    navController.popBackStack()
-                },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = VerdePrincipal,
@@ -226,7 +213,7 @@ fun CreateMatchScreen(navController: NavController) {
                 ),
                 enabled = isButtonEnabled
             ) {
-                Text("Crear Partido", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("Confirmar Reserva", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

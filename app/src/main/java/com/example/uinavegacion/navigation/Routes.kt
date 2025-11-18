@@ -8,6 +8,7 @@ sealed class Route(val path: String) {
     // --- Pantallas Principales ---
     object Home : Route("home_screen")
     object CreateTeam : Route("create_team_screen")
+
     object Map : Route("map_screen")
 
     // --- Flujo de Emparejamiento
@@ -21,4 +22,9 @@ sealed class Route(val path: String) {
     object Reservation : Route("reservation_screen")
     object CreateMatch : Route("create_match_screen")
     object CourtList : Route("court_list_screen")
+
+    object Booking : Route(path = "booking_screen")
+
+    object Stats : Route("stats_screen")
+
 }

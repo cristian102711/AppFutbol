@@ -217,9 +217,11 @@ fun ActionButtonsRow(navController: NavController) {
         // Botón 3: Reservar cancha
         ActionButton(
             text = "Reservar cancha",
-            onClick = { navController.navigate(Route.Reservation.path) }, // <-- CAMBIO
+            // --- CAMBIO AQUÍ ---
+            onClick = { navController.navigate(Route.Booking.path) },
             modifier = Modifier.weight(1f)
         )
+
     }
 }
 
@@ -571,7 +573,7 @@ fun AppDrawerContent(
                         "Emparejamiento automatico" -> navController.navigate(Route.MatchmakingStart.path)
                         "Ver Canchas" -> navController.navigate(Route.CourtList.path)
                         "Chat equipo" -> navController.navigate(Route.Chat.path)
-                        "Reservar cancha" -> navController.navigate(Route.Reservation.path)
+                        "Reservar cancha" -> navController.navigate(Route.Booking.path)
 
                         "Cerrar Sesión", "Salir" -> {
                             authViewModel.logoutUser()
