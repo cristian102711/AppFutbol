@@ -4,15 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-import androidx.compose.material3.Text // Para el placeholder de Stats
+import androidx.compose.material3.Text
 
 // --- Imports de Pantallas ---
 import com.example.uinavegacion.ui.screen.AvailableTeamsScreen
 import com.example.uinavegacion.ui.screen.BookingScreen
 import com.example.uinavegacion.ui.screen.ChatScreen
-import com.example.uinavegacion.ui.screen.CourtListScreen // <-- Ahora sí lo encontrará
+import com.example.uinavegacion.ui.screen.CourtListScreen
 import com.example.uinavegacion.ui.screen.CreateMatchScreen
 import com.example.uinavegacion.ui.screen.CreateTeamScreen
 import com.example.uinavegacion.ui.screen.HomeScreen
@@ -22,6 +20,8 @@ import com.example.uinavegacion.ui.screen.MatchmakingScreen
 import com.example.uinavegacion.ui.screen.MatchmakingStartScreen
 import com.example.uinavegacion.ui.screen.RegisterScreen
 import com.example.uinavegacion.ui.screen.ReservationScreen
+import com.example.uinavegacion.ui.screen.MapScreen
+import com.example.uinavegacion.ui.screen.StatsScreen
 
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.CreateTeamViewModel
@@ -34,6 +34,12 @@ fun NavGraph(
 ) {
     NavHost(navController = navController, startDestination = Route.Login.path) {
 
+        // --- Perfil (Estadísticas) ---
+        // Esta es la ÚNICA vez que debe aparecer esta ruta
+        composable(Route.Stats.path) {
+            StatsScreen(navController = navController)
+        }
+
         // --- Autenticación ---
         composable(Route.Login.path) { LoginScreen(navController, authViewModel) }
         composable(Route.Register.path) { RegisterScreen(navController, authViewModel) }
@@ -44,6 +50,9 @@ fun NavGraph(
         // --- Canchas y Reservas ---
         composable(Route.Booking.path) { BookingScreen(navController) }
         composable(Route.CourtList.path) { CourtListScreen(navController) }
+
+        // --- Mapa ---
+        composable(Route.Map.path) { MapScreen(navController = navController) }
 
         // --- Emparejamiento ---
         composable(Route.MatchmakingStart.path) { MatchmakingStartScreen(navController) }
@@ -56,8 +65,7 @@ fun NavGraph(
             CreateTeamScreen(navController = navController, viewModel = createTeamViewModel)
         }
 
-        // --- Otros (Placeholders si faltan archivos) ---
-        composable(Route.Stats.path) { Text("Pantalla de Estadísticas (En construcción)") }
+        // --- Otros ---
         composable(Route.Chat.path) { ChatScreen(navController) }
         composable(Route.Reservation.path) { ReservationScreen(navController) }
         composable(Route.CreateMatch.path) { CreateMatchScreen(navController) }

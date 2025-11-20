@@ -64,13 +64,15 @@ dependencies {
     // Librería para la Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("androidx.compose.material3:material3:1.2.1") // <-- Esta es la que arregla el error
+    implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.navigation:navigation-compose:2.9.5")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     implementation("androidx.compose.material:material-icons-extended")
+    // OpenStreetMap (Mapas gratis)
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
 
     // --- LIBRERÍAS ROOM (LAS DEJAMOS ACTIVAS) ---
     implementation("androidx.room:room-runtime:2.6.1")

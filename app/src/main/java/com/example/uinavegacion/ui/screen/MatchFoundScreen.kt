@@ -141,7 +141,7 @@ fun MatchFoundScreen(navController: NavController) {
 
             // Botones de Acción
             Button(
-                onClick = { /* TODO: Navegar a la pantalla de Chat */ },
+                onClick = {navController.navigate(Route.Chat.path)},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

@@ -96,7 +96,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
 
                 // 2. Mantenemos tus textos de bienvenida (con el nombre actualizado)
                 Text(
-                    text = "Bienvenido a Next Match",
+                    text = "Next Match",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground

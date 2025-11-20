@@ -2,7 +2,7 @@
 
 package com.example.uinavegacion.ui.screen
 
-// --- Imports de Layout (Nuevos y existentes) ---
+// --- Imports de Layout ---
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -11,6 +11,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,10 +27,10 @@ import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.*
 
-// --- Imports de Material 3 (Nuevos y existentes) ---
+// --- Imports de Material 3 ---
 import androidx.compose.material3.*
 
-// --- Imports de Runtime (Nuevos y existentes) ---
+// --- Imports de Runtime ---
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,13 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.text.style.TextOverflow
-
-// --- Imports Correctos ---
 import androidx.compose.ui.text.style.TextAlign
 
-
-
-// --- Otros imports (Nuevos y existentes) ---
+// --- Otros imports ---
 import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -68,8 +65,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Objects
-import androidx.compose.foundation.BorderStroke
-
 
 // ===================================================================
 // 1. FUNCIÓN PRINCIPAL DE HOMESCREEN (ACTUALIZADA)
@@ -84,7 +79,7 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
     val context = LocalContext.current
     var tempCameraImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // --- Launchers de Cámara/Galería (Sin cambios) ---
+    // --- Launchers de Cámara/Galería ---
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -117,7 +112,6 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
             }
         }
     )
-    // --- Fin de Launchers ---
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -164,8 +158,8 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
-            // --- FIN DEL NUEVO DISEÑO ---
 
+            // --- Diálogo de Foto ---
             if (showImageDialog) {
                 ImagePickerDialog(
                     onDismiss = { showImageDialog = false },
@@ -191,7 +185,7 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
 }
 
 // ===================================================================
-// 2. COMPOSABLES DEL NUEVO DISEÑO (¡ACTUALIZADOS!)
+// 2. COMPOSABLES DEL DISEÑO
 // ===================================================================
 
 @Composable
@@ -210,18 +204,16 @@ fun ActionButtonsRow(navController: NavController) {
         // Botón 2: Emparejamiento
         ActionButton(
             text = "Emparejamiento",
-            onClick = { navController.navigate(Route.MatchmakingStart.path) }, // <-- (Ya estaba bien)
+            onClick = { navController.navigate(Route.MatchmakingStart.path) },
             modifier = Modifier.weight(1f)
         )
 
         // Botón 3: Reservar cancha
         ActionButton(
             text = "Reservar cancha",
-            // --- CAMBIO AQUÍ ---
-            onClick = { navController.navigate(Route.Booking.path) },
+            onClick = { navController.navigate(Route.Booking.path) }, // <-- CAMBIO
             modifier = Modifier.weight(1f)
         )
-
     }
 }
 
@@ -339,7 +331,7 @@ fun MatchCard(
 
 
 // ===================================================================
-// 3. COMPOSABLES ANTIGUOS (SIN CAMBIOS... EXCEPTO EL MENÚ)
+// 3. COMPOSABLES DE AYUDA (IMAGEN, MENÚ, ETC)
 // ===================================================================
 
 @Composable
@@ -525,13 +517,16 @@ fun AppDrawerContent(
     val currentUserName = authViewModel.currentUserName ?: "Usuario"
 
     // --- Lista de Menú ACTUALIZADA ---
-    // (Sin "Estadísticas" ni "Calificar")
     val dynamicMenuItems = buildList {
-        add(MenuItem("Chat equipo", Icons.AutoMirrored.Filled.Chat))
-        add(MenuItem("Reservar cancha", Icons.Default.CalendarToday))
+
+        // Botones principales del flujo
+        add(MenuItem("Mi Perfil", Icons.Default.Person)) // Nueva pantalla de estadísticas
+        add(MenuItem("Crear y Confirmar equipos", Icons.Default.Groups))
         add(MenuItem("Emparejamiento automatico", Icons.Default.Shuffle))
         add(MenuItem("Ver Canchas", Icons.Default.LocationOn))
-        add(MenuItem("Crear y Confirmar equipos", Icons.Default.Groups))
+        add(MenuItem("Reservar cancha", Icons.Default.CalendarToday))
+        add(MenuItem("Chat equipo", Icons.AutoMirrored.Filled.Chat))
+
 
         if (isGuest) {
             add(MenuItem("Salir", Icons.AutoMirrored.Filled.ExitToApp, isDestructive = false))
@@ -569,6 +564,7 @@ fun AppDrawerContent(
                     onCloseDrawer()
                     // --- NAVEGACIÓN DEL MENÚ ACTUALIZADA ---
                     when (item.title) {
+                        "Mi Perfil" -> navController.navigate(Route.Stats.path) // Nueva ruta
                         "Crear y Confirmar equipos" -> navController.navigate(Route.CreateTeam.path)
                         "Emparejamiento automatico" -> navController.navigate(Route.MatchmakingStart.path)
                         "Ver Canchas" -> navController.navigate(Route.CourtList.path)
