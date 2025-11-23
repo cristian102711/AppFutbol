@@ -25,8 +25,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // URL para producción (cuando el backend esté en un servidor real)
+            buildConfigField("String", "API_BASE_URL", "\"https://tu-api-de-produccion.com/\"")
+        }
+        debug {
+            // URL para desarrollo (apuntando al localhost de tu PC desde el emulador)
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -36,6 +43,8 @@ android {
     }
     buildFeatures {
         compose = true
+        // Habilitamos la generación de BuildConfig
+        buildConfig = true
     }
 }
 
@@ -73,6 +82,10 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     // OpenStreetMap (Mapas gratis)
     implementation("org.osmdroid:osmdroid-android:6.1.18")
+
+    // --- LIBRERÍAS PARA CONEXIÓN A INTERNET (RETROFIT) ---
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // --- LIBRERÍAS ROOM (LAS DEJAMOS ACTIVAS) ---
     implementation("androidx.room:room-runtime:2.6.1")

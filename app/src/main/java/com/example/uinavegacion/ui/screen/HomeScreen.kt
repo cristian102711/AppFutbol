@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.uinavegacion.ui.screen
 
-// --- Imports de Layout ---
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -10,27 +7,31 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.*
-
-// --- Imports de Material 3 ---
 import androidx.compose.material3.*
-
-// --- Imports de Runtime ---
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,20 +46,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.style.TextAlign
-
-// --- Otros imports ---
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.uinavegacion.navigation.Route
 import com.example.uinavegacion.ui.theme.GrisComponente
 import com.example.uinavegacion.ui.theme.TextoGris
 import com.example.uinavegacion.ui.theme.VerdePrincipal
+import com.example.uinavegacion.ui.viewmodel.PartidoUiState
+import com.example.uinavegacion.ui.viewmodel.PartidoViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -66,20 +68,22 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Objects
 
-// ===================================================================
-// 1. FUNCIÓN PRINCIPAL DE HOMESCREEN (ACTUALIZADA)
-// ===================================================================
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
+fun HomeScreen(
+    navController: NavController, 
+    authViewModel: AuthViewModel, 
+    partidoViewModel: PartidoViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val currentUserName = authViewModel.currentUserName ?: "Usuario"
+    val uiState by partidoViewModel.uiState.collectAsStateWithLifecycle()
 
     var showImageDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var tempCameraImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // --- Launchers de Cámara/Galería ---
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -129,37 +133,29 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
                 MyBottomBar(onMenuClick = { scope.launch { drawerState.open() } })
             }
         ) { innerPadding ->
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
             ) {
-
                 HeaderProfile(
                     userName = currentUserName,
                     profileImageUri = authViewModel.profileImageUri,
-                    onProfileClick = {
-                        showImageDialog = true
-                    }
+                    onProfileClick = { showImageDialog = true }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 2. Fila de Botones de Acción (ACTUALIZADA)
                 ActionButtonsRow(navController = navController)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 3. Sección de "Próximos Partidos"
-                UpcomingMatchesSection(navController = navController)
+                UpcomingMatchesSection(uiState = uiState)
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // --- Diálogo de Foto ---
             if (showImageDialog) {
                 ImagePickerDialog(
                     onDismiss = { showImageDialog = false },
@@ -184,9 +180,53 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
     }
 }
 
-// ===================================================================
-// 2. COMPOSABLES DEL DISEÑO
-// ===================================================================
+@Composable
+fun UpcomingMatchesSection(uiState: PartidoUiState) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Próximos partidos",
+            color = Color.White,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(color = VerdePrincipal)
+                }
+                uiState.error != null -> {
+                    Text(
+                        text = uiState.error,
+                        color = Color.Red,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                uiState.partidos.isEmpty() -> {
+                    Text(
+                        text = "No hay partidos programados.",
+                        color = TextoGris,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                else -> {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        items(uiState.partidos) { partido ->
+                            MatchCard(
+                                teamName = partido.nombreRival,
+                                details = "Fecha: ${partido.fecha} - Resultado: ${partido.resultado}",
+                                buttonText = "ver detalles",
+                                isConfirmation = false,
+                                onClick = { /* TODO: Navegar a detalles del partido con el partido.id */ }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun ActionButtonsRow(navController: NavController) {
@@ -194,24 +234,19 @@ fun ActionButtonsRow(navController: NavController) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Botón 1: Crear partido
         ActionButton(
             text = "Crear partido",
-            onClick = { navController.navigate(Route.CreateMatch.path) }, // <-- CAMBIO
+            onClick = { navController.navigate(Route.CreateMatch.path) },
             modifier = Modifier.weight(1f)
         )
-
-        // Botón 2: Emparejamiento
         ActionButton(
             text = "Emparejamiento",
             onClick = { navController.navigate(Route.MatchmakingStart.path) },
             modifier = Modifier.weight(1f)
         )
-
-        // Botón 3: Reservar cancha
         ActionButton(
             text = "Reservar cancha",
-            onClick = { navController.navigate(Route.Booking.path) }, // <-- CAMBIO
+            onClick = { navController.navigate(Route.Booking.path) },
             modifier = Modifier.weight(1f)
         )
     }
@@ -236,39 +271,6 @@ fun ActionButton(
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             lineHeight = 14.sp
-        )
-    }
-}
-
-@Composable
-fun UpcomingMatchesSection(navController: NavController) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = "Próximos partidos",
-            color = Color.White,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        // Tarjeta 1
-        MatchCard(
-            teamName = "Los Galacticos FC",
-            details = "Viernes 5 de junio - 19:30 hrs\nFutbolito Ñuñoa, Pedro de Valdivia",
-            buttonText = "ver detalles",
-            isConfirmation = false,
-            onClick = { /* TODO: Navegar a detalles del partido */ }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Tarjeta 2
-        MatchCard(
-            teamName = "Real Amigos FC vs Los Invencibles",
-            details = "Viernes 5 de junio - 19:30 hrs\nFutbolito Ñuñoa, Pedro de Valdivia",
-            buttonText = "confirmar",
-            isConfirmation = true,
-            onClick = { /* TODO: Lógica de confirmación */ }
         )
     }
 }
@@ -328,11 +330,6 @@ fun MatchCard(
         }
     }
 }
-
-
-// ===================================================================
-// 3. COMPOSABLES DE AYUDA (IMAGEN, MENÚ, ETC)
-// ===================================================================
 
 @Composable
 fun ImagePickerDialog(
@@ -504,9 +501,6 @@ fun MyBottomBar(onMenuClick: () -> Unit) {
     }
 }
 
-// ===================================================================
-// ¡MENÚ LATERAL ACTUALIZADO!
-// ===================================================================
 @Composable
 fun AppDrawerContent(
     navController: NavController,
@@ -516,17 +510,14 @@ fun AppDrawerContent(
     val isGuest = authViewModel.currentUserName == "Invitado"
     val currentUserName = authViewModel.currentUserName ?: "Usuario"
 
-    // --- Lista de Menú ACTUALIZADA ---
     val dynamicMenuItems = buildList {
-
-        // Botones principales del flujo
-        add(MenuItem("Mi Perfil", Icons.Default.Person)) // Nueva pantalla de estadísticas
-        add(MenuItem("Crear y Confirmar equipos", Icons.Default.Groups))
+        add(MenuItem("Mi Perfil", Icons.Default.Person))
+        add(MenuItem("Ver Jugadores", Icons.Default.SportsSoccer))
+        add(MenuItem("Ver Equipos", Icons.Default.Groups)) // <-- AÑADIDO
         add(MenuItem("Emparejamiento automatico", Icons.Default.Shuffle))
         add(MenuItem("Ver Canchas", Icons.Default.LocationOn))
         add(MenuItem("Reservar cancha", Icons.Default.CalendarToday))
         add(MenuItem("Chat equipo", Icons.AutoMirrored.Filled.Chat))
-
 
         if (isGuest) {
             add(MenuItem("Salir", Icons.AutoMirrored.Filled.ExitToApp, isDestructive = false))
@@ -562,9 +553,10 @@ fun AppDrawerContent(
             items(dynamicMenuItems) { item ->
                 MenuItemRow(item = item) {
                     onCloseDrawer()
-                    // --- NAVEGACIÓN DEL MENÚ ACTUALIZADA ---
                     when (item.title) {
-                        "Mi Perfil" -> navController.navigate(Route.Stats.path) // Nueva ruta
+                        "Mi Perfil" -> navController.navigate(Route.Stats.path)
+                        "Ver Jugadores" -> navController.navigate(Route.PlayerList.path)
+                        "Ver Equipos" -> navController.navigate(Route.TeamList.path) // <-- AÑADIDO
                         "Crear y Confirmar equipos" -> navController.navigate(Route.CreateTeam.path)
                         "Emparejamiento automatico" -> navController.navigate(Route.MatchmakingStart.path)
                         "Ver Canchas" -> navController.navigate(Route.CourtList.path)

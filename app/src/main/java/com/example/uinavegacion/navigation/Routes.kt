@@ -8,6 +8,8 @@ sealed class Route(val path: String) {
     // --- Pantallas Principales ---
     object Home : Route("home_screen")
     object CreateTeam : Route("create_team_screen")
+    object PlayerList : Route("player_list_screen")
+    object TeamList : Route("team_list_screen") // <-- AÑADIDO
 
     object Map : Route("map_screen")
 

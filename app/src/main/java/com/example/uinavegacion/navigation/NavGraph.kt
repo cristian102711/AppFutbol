@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.compose.material3.Text
 
 // --- Imports de Pantallas ---
 import com.example.uinavegacion.ui.screen.AvailableTeamsScreen
@@ -18,11 +17,18 @@ import com.example.uinavegacion.ui.screen.LoginScreen
 import com.example.uinavegacion.ui.screen.MatchFoundScreen
 import com.example.uinavegacion.ui.screen.MatchmakingScreen
 import com.example.uinavegacion.ui.screen.MatchmakingStartScreen
+import com.example.uinavegacion.ui.screen.PlayerListScreen
 import com.example.uinavegacion.ui.screen.RegisterScreen
 import com.example.uinavegacion.ui.screen.ReservationScreen
 import com.example.uinavegacion.ui.screen.MapScreen
 import com.example.uinavegacion.ui.screen.StatsScreen
+import com.example.uinavegacion.ui.screen.TeamListScreen
 
+// --- Imports de ViewModels ---
+import com.example.uinavegacion.ui.viewmodel.CreateMatchViewModel
+import com.example.uinavegacion.ui.viewmodel.EquipoViewModel
+import com.example.uinavegacion.ui.viewmodel.JugadorViewModel
+import com.example.uinavegacion.ui.viewmodel.PartidoViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.CreateTeamViewModel
 
@@ -30,12 +36,21 @@ import com.example.uinavegacion.viewmodel.CreateTeamViewModel
 fun NavGraph(
     navController: NavHostController,
     authViewModel: AuthViewModel,
-    createTeamViewModel: CreateTeamViewModel
+    createTeamViewModel: CreateTeamViewModel,
+    partidoViewModel: PartidoViewModel,
+    jugadorViewModel: JugadorViewModel,
+    equipoViewModel: EquipoViewModel,
+    createMatchViewModel: CreateMatchViewModel // <-- AÑADIDO
 ) {
     NavHost(navController = navController, startDestination = Route.Login.path) {
 
+        // --- Pantallas Principales ---
+        composable(Route.Home.path) { HomeScreen(navController, authViewModel, partidoViewModel) }
+        composable(Route.PlayerList.path) { PlayerListScreen(jugadorViewModel) }
+        composable(Route.TeamList.path) { TeamListScreen(equipoViewModel) }
+        composable(Route.CreateMatch.path) { CreateMatchScreen(navController, createMatchViewModel) } // <-- MODIFICADO
+
         // --- Perfil (Estadísticas) ---
-        // Esta es la ÚNICA vez que debe aparecer esta ruta
         composable(Route.Stats.path) {
             StatsScreen(navController = navController)
         }
@@ -43,9 +58,6 @@ fun NavGraph(
         // --- Autenticación ---
         composable(Route.Login.path) { LoginScreen(navController, authViewModel) }
         composable(Route.Register.path) { RegisterScreen(navController, authViewModel) }
-
-        // --- Home ---
-        composable(Route.Home.path) { HomeScreen(navController, authViewModel) }
 
         // --- Canchas y Reservas ---
         composable(Route.Booking.path) { BookingScreen(navController) }
@@ -68,6 +80,5 @@ fun NavGraph(
         // --- Otros ---
         composable(Route.Chat.path) { ChatScreen(navController) }
         composable(Route.Reservation.path) { ReservationScreen(navController) }
-        composable(Route.CreateMatch.path) { CreateMatchScreen(navController) }
     }
 }
