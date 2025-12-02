@@ -23,24 +23,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-// --- Imports de Tema y Colores ---
 import com.example.uinavegacion.ui.theme.VerdePrincipal
 import com.example.uinavegacion.ui.theme.GrisComponente
 import com.example.uinavegacion.ui.theme.TextoGris
-// ---------------------------------
 
-// --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
 import com.example.uinavegacion.navigation.Route
-// ---------------------------------
+import com.example.uinavegacion.ui.viewmodel.MatchmakingViewModel
 
-import com.example.uinavegacion.ui.screen.customTextFieldColors
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-@Composable
-fun MatchmakingScreen(navController: NavController) {
+// NOTA: He borrado la función 'customTextFieldColors()' de aquí.
+// Al borrarla, el código usará automáticamente la que está en CommonComponents.kt
+// y se arreglarán los 10 errores de "Overload resolution".
 
-    // --- Lista Completa de Comunas (Provincia de Santiago) ---
+@Composable
+fun MatchmakingScreen(
+    navController: NavController,
+    viewModel: MatchmakingViewModel
+) {
+
+    // --- Lista Completa de Comunas ---
     val todasLasComunas = listOf(
         "Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central",
         "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja",
@@ -50,30 +53,22 @@ fun MatchmakingScreen(navController: NavController) {
         "Renca", "San Joaquín", "San Miguel", "San Ramón", "Santiago", "Vitacura"
     )
 
-    // --- Estados para los selectores ---
     var selectedDate by remember { mutableStateOf("") }
-    var selectedTime by remember { mutableStateOf("") } // <-- Se escribe
-    var selectedLocation by remember { mutableStateOf("") } // <-- Se busca
-
-    // Estado para el menú de ubicación
+    var selectedTime by remember { mutableStateOf("") }
+    var selectedLocation by remember { mutableStateOf("") }
     var isLocationMenuExpanded by remember { mutableStateOf(false) }
 
-    // Lista filtrada de comunas
     val filteredComunas = remember(selectedLocation) {
-        if (selectedLocation.isBlank()) {
-            todasLasComunas // Mostrar todas si no hay texto
-        } else {
-            todasLasComunas.filter { it.contains(selectedLocation, ignoreCase = true) }
-        }
+        if (selectedLocation.isBlank()) todasLasComunas
+        else todasLasComunas.filter { it.contains(selectedLocation, ignoreCase = true) }
     }
 
-    // Estado para el calendario (DatePicker)
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
     val isButtonEnabled = selectedDate.isNotBlank() && selectedTime.isNotBlank() && selectedLocation.isNotBlank()
 
-    // --- Diálogo del Calendario (Sin cambios) ---
+    // --- Diálogo del Calendario ---
     if (showDatePicker) {
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
@@ -88,10 +83,7 @@ fun MatchmakingScreen(navController: NavController) {
                 ) { Text("OK") }
             },
             dismissButton = {
-                TextButton(
-                    onClick = { showDatePicker = false },
-                    colors = ButtonDefaults.textButtonColors(contentColor = VerdePrincipal)
-                ) { Text("Cancelar") }
+                TextButton(onClick = { showDatePicker = false }, colors = ButtonDefaults.textButtonColors(contentColor = VerdePrincipal)) { Text("Cancelar") }
             },
             colors = DatePickerDefaults.colors(
                 containerColor = Color.Black,
@@ -104,13 +96,10 @@ fun MatchmakingScreen(navController: NavController) {
                 todayDateBorderColor = VerdePrincipal,
                 todayContentColor = VerdePrincipal,
             )
-        ) {
-            DatePicker(state = datePickerState)
-        }
+        ) { DatePicker(state = datePickerState) }
     }
-    // --- Fin del Calendario ---
 
-    // --- Interfaz de Usuario (UI) ---
+    // --- UI Principal ---
     Scaffold(
         topBar = {
             TopAppBar(
@@ -143,20 +132,16 @@ fun MatchmakingScreen(navController: NavController) {
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // --- 1. Campo de Fecha (Clickable, abre Calendario) ---
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showDatePicker = true } // <-- El clic va en el Box
-            ) {
+            // 1. Campo Fecha
+            Box(modifier = Modifier.fillMaxWidth().clickable { showDatePicker = true }) {
                 OutlinedTextField(
                     value = selectedDate,
-                    onValueChange = { /* No hacer nada */ },
+                    onValueChange = { },
                     readOnly = true,
                     label = { Text("Fecha") },
                     leadingIcon = { Icon(Icons.Default.CalendarToday, contentDescription = null) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = customTextFieldColors(),
+                    colors = customTextFieldColors(), // <--- Usa la función de CommonComponents
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
                     enabled = false
@@ -165,47 +150,38 @@ fun MatchmakingScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // --- 2. Campo de Hora (Editable por el usuario) ---
+            // 2. Campo Hora
             OutlinedTextField(
                 value = selectedTime,
-                onValueChange = { selectedTime = it }, // <-- El usuario escribe
+                onValueChange = { selectedTime = it },
                 label = { Text("Hora (ej: 19:30)") },
                 leadingIcon = { Icon(Icons.Default.Schedule, contentDescription = null) },
                 modifier = Modifier.fillMaxWidth(),
-                colors = customTextFieldColors(),
+                colors = customTextFieldColors(), // <--- Usa la función de CommonComponents
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Phone, // Teclado numérico
-                    imeAction = ImeAction.Next
-                )
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // --- 3. Campo de Ubicación (Buscador Autocompletable) ---
+            // 3. Campo Ubicación
             ExposedDropdownMenuBox(
                 expanded = isLocationMenuExpanded,
                 onExpandedChange = { isLocationMenuExpanded = !isLocationMenuExpanded }
             ) {
                 OutlinedTextField(
                     value = selectedLocation,
-                    onValueChange = {
-                        selectedLocation = it // <-- ¡Sí puedes escribir aquí!
-                        isLocationMenuExpanded = true // Mantener abierto mientras escribe
-                    },
+                    onValueChange = { selectedLocation = it; isLocationMenuExpanded = true },
                     label = { Text("Ubicación (Comuna)") },
                     leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isLocationMenuExpanded) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .menuAnchor(),
-                    colors = customTextFieldColors(),
+                    modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    colors = customTextFieldColors(), // <--- Usa la función de CommonComponents
                     shape = RoundedCornerShape(12.dp),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
 
-                // Opciones del menú (filtradas)
                 ExposedDropdownMenu(
                     expanded = isLocationMenuExpanded,
                     onDismissRequest = { isLocationMenuExpanded = false },
@@ -214,35 +190,25 @@ fun MatchmakingScreen(navController: NavController) {
                     filteredComunas.forEach { comuna ->
                         DropdownMenuItem(
                             text = { Text(comuna, color = Color.White) },
-                            onClick = {
-                                selectedLocation = comuna
-                                isLocationMenuExpanded = false
-                            },
-                            colors = MenuDefaults.itemColors(
-                                textColor = Color.White
-                            )
+                            onClick = { selectedLocation = comuna; isLocationMenuExpanded = false },
+                            colors = MenuDefaults.itemColors(textColor = Color.White)
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Empuja el botón al fondo
+            Spacer(modifier = Modifier.weight(1f))
 
-            // Botón de Buscar
+            // Botón Buscar
             Button(
                 onClick = {
-                    // --- ¡EL BOTÓN YA ESTÁ CORREGIDO! ---
-                    navController.navigate(Route.AvailableTeams.path)
+                    viewModel.startMatchmaking()
+                    navController.navigate(Route.MatchFound.path)
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
+                modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = VerdePrincipal,
-                    contentColor = Color.Black
-                ),
-                enabled = isButtonEnabled // Se activa solo si los 3 campos están llenos
+                colors = ButtonDefaults.buttonColors(containerColor = VerdePrincipal, contentColor = Color.Black),
+                enabled = isButtonEnabled
             ) {
                 Text("Buscar", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }

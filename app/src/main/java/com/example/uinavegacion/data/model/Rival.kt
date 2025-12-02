@@ -6,6 +6,6 @@ data class Rival(
     @SerializedName("id")
     val id: Long,
 
-    @SerializedName("name")
-    val nombre: String
+    @SerializedName("nombre")
+    val nombre: String?
 )

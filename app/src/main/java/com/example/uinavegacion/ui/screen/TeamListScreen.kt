@@ -2,7 +2,6 @@ package com.example.uinavegacion.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -81,7 +80,9 @@ private fun TeamListContent(uiState: EquipoUiState) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(uiState.equipos) { equipo ->
-                    TeamCard(teamName = equipo.nombre)
+                    // CORRECCIÓN: Usamos el operador Elvis (?:)
+                    // Si el nombre es null, mostramos un texto por defecto.
+                    TeamCard(teamName = equipo.nombre ?: "Equipo Desconocido")
                 }
             }
         }

@@ -9,12 +9,15 @@ import com.example.uinavegacion.data.network.RetrofitInstance
 import com.example.uinavegacion.data.repository.EquipoRepository
 import com.example.uinavegacion.data.repository.JugadorRepository
 import com.example.uinavegacion.data.repository.PartidoRepository
+import com.example.uinavegacion.data.repository.RivalRepository
 import com.example.uinavegacion.navigation.NavGraph
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
 import com.example.uinavegacion.ui.viewmodel.CreateMatchViewModel
 import com.example.uinavegacion.ui.viewmodel.EquipoViewModel
 import com.example.uinavegacion.ui.viewmodel.JugadorViewModel
+import com.example.uinavegacion.ui.viewmodel.MatchmakingViewModel // <--- IMPORTANTE
 import com.example.uinavegacion.ui.viewmodel.PartidoViewModel
+import com.example.uinavegacion.ui.viewmodel.RivalViewModel
 import com.example.uinavegacion.ui.viewmodel.ViewModelFactory
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.CreateTeamViewModel
@@ -27,24 +30,34 @@ class MainActivity : ComponentActivity() {
             UINavegacionTheme {
                 val navController = rememberNavController()
 
-                // --- Construcción de Dependencias para la Red ---
-                val apiService = RetrofitInstance.api
-                val partidoRepository = PartidoRepository(apiService)
-                val jugadorRepository = JugadorRepository(apiService)
-                val equipoRepository = EquipoRepository(apiService)
+                // --- 1. REPOSITORIOS ---
+                val partidoRepository = PartidoRepository(RetrofitInstance.apiPartidos)
+                val equipoRepository = EquipoRepository(RetrofitInstance.apiEquipos)
+                val jugadorRepository = JugadorRepository(RetrofitInstance.apiJugadores)
+                val rivalRepository = RivalRepository(RetrofitInstance.apiRivales)
 
-                // La Factory ahora recibe todos los repositorios
-                val viewModelFactory = ViewModelFactory(partidoRepository, jugadorRepository, equipoRepository)
+                // --- 2. FACTORY ---
+                val viewModelFactory = ViewModelFactory(
+                    partidoRepository,
+                    jugadorRepository,
+                    equipoRepository,
+                    rivalRepository
+                )
 
-                // Inicialización de ViewModels
+                // --- 3. VIEWMODELS ---
                 val authViewModel: AuthViewModel = viewModel()
                 val createTeamViewModel: CreateTeamViewModel = viewModel()
+
                 val partidoViewModel: PartidoViewModel = viewModel(factory = viewModelFactory)
                 val jugadorViewModel: JugadorViewModel = viewModel(factory = viewModelFactory)
                 val equipoViewModel: EquipoViewModel = viewModel(factory = viewModelFactory)
                 val createMatchViewModel: CreateMatchViewModel = viewModel(factory = viewModelFactory)
+                val rivalViewModel: RivalViewModel = viewModel(factory = viewModelFactory)
 
-                // Llamada al NavGraph con todos los ViewModels
+                // ESTE FALTABA:
+                val matchmakingViewModel: MatchmakingViewModel = viewModel(factory = viewModelFactory)
+
+                // --- 4. NAVGRAPH ---
                 NavGraph(
                     navController = navController,
                     authViewModel = authViewModel,
@@ -52,7 +65,9 @@ class MainActivity : ComponentActivity() {
                     partidoViewModel = partidoViewModel,
                     jugadorViewModel = jugadorViewModel,
                     equipoViewModel = equipoViewModel,
-                    createMatchViewModel = createMatchViewModel
+                    createMatchViewModel = createMatchViewModel,
+                    rivalViewModel = rivalViewModel,
+                    matchmakingViewModel = matchmakingViewModel // <--- SE PASA AQUÍ
                 )
             }
         }

@@ -22,13 +22,25 @@ class CreateMatchViewModel(private val partidoRepository: PartidoRepository) : V
     private val _uiState = MutableStateFlow(CreateMatchUiState())
     val uiState: StateFlow<CreateMatchUiState> = _uiState.asStateFlow()
 
+    // NOTA: Mantenemos 'nombreRival' en los argumentos para que tu UI no se rompa,
+    // pero internamente usaremos un ID fijo temporalmente.
     fun createPartido(nombreRival: String, fecha: String, resultado: String) {
         _uiState.update { it.copy(isLoading = true, error = null, success = false) }
 
         viewModelScope.launch {
-            // Creamos un objeto Partido. El ID lo pone el backend, así que usamos 0 como placeholder.
-            val nuevoPartido = Partido(id = 0, nombreRival = nombreRival, fecha = fecha, resultado = resultado)
-            
+            // CORRECCIÓN: Adaptamos la creación del objeto al nuevo modelo Partido.
+            // 1. rivalId = 1: Ponemos un ID fijo (1) porque el backend pide un número.
+            //    (Más adelante tendrás que cambiar el campo de texto por un selector de equipos).
+            // 2. Agregamos golesFavor y golesContra en 0 por defecto.
+            val nuevoPartido = Partido(
+                id = 0,
+                fecha = fecha,
+                rivalId = 1, // <--- TEMPORAL: Usamos el ID 1 para probar la conexión
+                resultado = resultado,
+                golesFavor = 0,
+                golesContra = 0
+            )
+
             val result = partidoRepository.createPartido(nuevoPartido)
 
             result.onSuccess {

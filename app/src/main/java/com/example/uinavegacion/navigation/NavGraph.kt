@@ -23,12 +23,15 @@ import com.example.uinavegacion.ui.screen.ReservationScreen
 import com.example.uinavegacion.ui.screen.MapScreen
 import com.example.uinavegacion.ui.screen.StatsScreen
 import com.example.uinavegacion.ui.screen.TeamListScreen
+import com.example.uinavegacion.ui.screen.RivalListScreen
 
 // --- Imports de ViewModels ---
 import com.example.uinavegacion.ui.viewmodel.CreateMatchViewModel
 import com.example.uinavegacion.ui.viewmodel.EquipoViewModel
 import com.example.uinavegacion.ui.viewmodel.JugadorViewModel
 import com.example.uinavegacion.ui.viewmodel.PartidoViewModel
+import com.example.uinavegacion.ui.viewmodel.RivalViewModel
+import com.example.uinavegacion.ui.viewmodel.MatchmakingViewModel // <--- IMPORTANTE
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.CreateTeamViewModel
 
@@ -40,15 +43,22 @@ fun NavGraph(
     partidoViewModel: PartidoViewModel,
     jugadorViewModel: JugadorViewModel,
     equipoViewModel: EquipoViewModel,
-    createMatchViewModel: CreateMatchViewModel // <-- AÑADIDO
+    createMatchViewModel: CreateMatchViewModel,
+    rivalViewModel: RivalViewModel,
+    matchmakingViewModel: MatchmakingViewModel // <--- AÑADIDO: Recibimos el ViewModel de Matchmaking
 ) {
     NavHost(navController = navController, startDestination = Route.Login.path) {
 
         // --- Pantallas Principales ---
         composable(Route.Home.path) { HomeScreen(navController, authViewModel, partidoViewModel) }
+
+        // --- Listas de Datos (Microservicios) ---
         composable(Route.PlayerList.path) { PlayerListScreen(jugadorViewModel) }
         composable(Route.TeamList.path) { TeamListScreen(equipoViewModel) }
-        composable(Route.CreateMatch.path) { CreateMatchScreen(navController, createMatchViewModel) } // <-- MODIFICADO
+        composable(Route.RivalList.path) { RivalListScreen(rivalViewModel) }
+
+        // --- Creación ---
+        composable(Route.CreateMatch.path) { CreateMatchScreen(navController, createMatchViewModel) }
 
         // --- Perfil (Estadísticas) ---
         composable(Route.Stats.path) {
@@ -66,11 +76,18 @@ fun NavGraph(
         // --- Mapa ---
         composable(Route.Map.path) { MapScreen(navController = navController) }
 
-        // --- Emparejamiento ---
+        // --- Emparejamiento (UPDATED) ---
         composable(Route.MatchmakingStart.path) { MatchmakingStartScreen(navController) }
-        composable(Route.Matchmaking.path) { MatchmakingScreen(navController) }
+
+        // AHORA PASAMOS EL VIEWMODEL A ESTAS PANTALLAS:
+        composable(Route.Matchmaking.path) {
+            MatchmakingScreen(navController, matchmakingViewModel)
+        }
+        composable(Route.MatchFound.path) {
+            MatchFoundScreen(navController, matchmakingViewModel)
+        }
+
         composable(Route.AvailableTeams.path) { AvailableTeamsScreen(navController) }
-        composable(Route.MatchFound.path) { MatchFoundScreen(navController) }
 
         // --- Crear Equipo ---
         composable(Route.CreateTeam.path) {

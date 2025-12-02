@@ -18,6 +18,8 @@ sealed class Route(val path: String) {
     object Matchmaking : Route("matchmaking_screen")
     object AvailableTeams : Route("available_teams_screen")
 
+    object RivalList : Route("rival_list")
+
     object MatchFound : Route("match_found_screen")
 
     object Chat : Route("chat_screen")

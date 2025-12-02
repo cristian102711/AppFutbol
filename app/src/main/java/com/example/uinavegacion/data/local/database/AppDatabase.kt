@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 @Database(
     entities = [UserEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase(){
     //traigo el DAO de las tablas con insert por defecto

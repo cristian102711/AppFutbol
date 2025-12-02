@@ -6,12 +6,18 @@ data class Jugador(
     @SerializedName("id")
     val id: Long,
 
-    @SerializedName("name")
-    val nombre: String,
+    @SerializedName("nombre")
+    val nombre: String?,
 
-    @SerializedName("position")
-    val posicion: String,
+    @SerializedName("posicion")
+    val posicion: String?,
 
-    @SerializedName("skill_level")
-    val nivel: Int
+    @SerializedName("dorsal")
+    val dorsal: Int?,
+
+    @SerializedName("edad")
+    val edad: Int?,
+
+    @SerializedName("equipoId")
+    val equipoId: Long?
 )

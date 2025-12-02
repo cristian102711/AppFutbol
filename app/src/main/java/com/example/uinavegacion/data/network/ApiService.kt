@@ -12,19 +12,21 @@ import retrofit2.http.POST
 interface ApiService {
 
     // --- GET (Leer) ---
-    @GET("api/v1/partidos")
-    suspend fun getPartidos(): List<Partido>
+    // Usamos 'suspend' y devolvemos 'Response' para manejar isSuccessful en el repositorio
 
-    @GET("api/v1/jugadores")
-    suspend fun getJugadores(): List<Jugador>
+    @GET("partidos")
+    suspend fun getPartidos(): Response<List<Partido>>
 
-    @GET("api/v1/equipos")
-    suspend fun getEquipos(): List<Equipo>
+    @GET("jugadores")
+    suspend fun getJugadores(): Response<List<Jugador>>
 
-    @GET("api/v1/rivales")
-    suspend fun getRivales(): List<Rival>
+    @GET("equipos")
+    suspend fun getEquipos(): Response<List<Equipo>>
+
+    @GET("rivales")
+    suspend fun getRivales(): Response<List<Rival>>
 
     // --- POST (Crear) ---
-    @POST("api/v1/partidos")
+    @POST("partidos")
     suspend fun createPartido(@Body partido: Partido): Response<Partido>
 }

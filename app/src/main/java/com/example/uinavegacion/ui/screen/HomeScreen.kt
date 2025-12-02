@@ -71,8 +71,8 @@ import java.util.Objects
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navController: NavController, 
-    authViewModel: AuthViewModel, 
+    navController: NavController,
+    authViewModel: AuthViewModel,
     partidoViewModel: PartidoViewModel
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -213,9 +213,15 @@ fun UpcomingMatchesSection(uiState: PartidoUiState) {
                 else -> {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         items(uiState.partidos) { partido ->
+
+                            // CORRECCIÓN: Usamos la propiedad auxiliar o el ID directamente
+                            val nombreEquipo = partido.nombreRivalMostrar // O usa "Rival #${partido.rivalId}"
+                            val fechaPartido = partido.fecha ?: "Fecha pte."
+                            val resultadoPartido = partido.resultado ?: "vs"
+
                             MatchCard(
-                                teamName = partido.nombreRival,
-                                details = "Fecha: ${partido.fecha} - Resultado: ${partido.resultado}",
+                                teamName = nombreEquipo,
+                                details = "Fecha: $fechaPartido - Res: $resultadoPartido",
                                 buttonText = "ver detalles",
                                 isConfirmation = false,
                                 onClick = { /* TODO: Navegar a detalles del partido con el partido.id */ }
@@ -518,6 +524,7 @@ fun AppDrawerContent(
         add(MenuItem("Ver Canchas", Icons.Default.LocationOn))
         add(MenuItem("Reservar cancha", Icons.Default.CalendarToday))
         add(MenuItem("Chat equipo", Icons.AutoMirrored.Filled.Chat))
+        add(MenuItem("Ver Rivales", Icons.Default.Flag))
 
         if (isGuest) {
             add(MenuItem("Salir", Icons.AutoMirrored.Filled.ExitToApp, isDestructive = false))
@@ -562,6 +569,7 @@ fun AppDrawerContent(
                         "Ver Canchas" -> navController.navigate(Route.CourtList.path)
                         "Chat equipo" -> navController.navigate(Route.Chat.path)
                         "Reservar cancha" -> navController.navigate(Route.Booking.path)
+                        "Ver Rivales" -> navController.navigate(Route.RivalList.path)
 
                         "Cerrar Sesión", "Salir" -> {
                             authViewModel.logoutUser()

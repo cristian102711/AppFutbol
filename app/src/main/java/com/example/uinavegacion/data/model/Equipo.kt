@@ -6,9 +6,12 @@ data class Equipo(
     @SerializedName("id")
     val id: Long,
 
-    @SerializedName("name")
-    val nombre: String,
+    @SerializedName("nombre") // ¡Antes decía "name"!
+    val nombre: String?,
 
-    @SerializedName("captain_id")
-    val capitanId: Long
+    @SerializedName("entrenador")
+    val entrenador: String?,
+
+    @SerializedName("escudoUrl")
+    val escudoUrl: String?
 )

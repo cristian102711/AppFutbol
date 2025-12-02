@@ -25,16 +25,28 @@ import com.example.uinavegacion.navigation.Route
 import com.example.uinavegacion.ui.theme.GrisComponente
 import com.example.uinavegacion.ui.theme.TextoGris
 import com.example.uinavegacion.ui.theme.VerdePrincipal
+import com.example.uinavegacion.ui.viewmodel.MatchmakingViewModel // <--- IMPORTANTE
 
 @Composable
-fun MatchFoundScreen(navController: NavController) {
+fun MatchFoundScreen(
+    navController: NavController,
+    viewModel: MatchmakingViewModel // <--- Recibimos el ViewModel con el dato
+) {
+    // Obtenemos el rival que el ViewModel encontró al azar
+    val rival = viewModel.rivalEncontrado
+
+    // Preparamos el nombre y las iniciales para mostrar
+    val nombreRival = rival?.nombre ?: "Rival Desconocido"
+    val inicialesRival = nombreRival.take(2).uppercase()
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Emparejamiento Exitoso") },
                 navigationIcon = {
-                    // Llevamos al Home, no solo "atrás"
                     IconButton(onClick = {
+                        // Al volver, limpiamos el estado y vamos al Home
+                        viewModel.resetState()
                         navController.navigate(Route.Home.path) {
                             popUpTo(Route.Home.path) { inclusive = true }
                         }
@@ -69,13 +81,13 @@ fun MatchFoundScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Fila de Logos de Equipos (usamos placeholders)
+            // --- ESCUDOS ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Placeholder Logo Equipo 1
+                // TU EQUIPO (Estático por ahora)
                 Box(
                     modifier = Modifier
                         .size(80.dp)
@@ -89,7 +101,7 @@ fun MatchFoundScreen(navController: NavController) {
 
                 Text("VS", color = TextoGris, fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
-                // Placeholder Logo Equipo 2
+                // RIVAL ENCONTRADO (Dinámico)
                 Box(
                     modifier = Modifier
                         .size(80.dp)
@@ -98,15 +110,16 @@ fun MatchFoundScreen(navController: NavController) {
                         .border(2.dp, Color.Red, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("RIVAL", color = Color.Red, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    // Mostramos las iniciales del rival real
+                    Text(inicialesRival, color = Color.Red, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nombres de Equipos
+            // --- NOMBRES DE EQUIPOS ---
             Text(
-                text = "Tu Equipo vs. Los Galacticos FC", // Datos de ejemplo
+                text = "Tu Equipo vs. $nombreRival", // <--- Nombre real aquí
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
@@ -115,7 +128,7 @@ fun MatchFoundScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Detalles del Partido
+            // --- DETALLES ---
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -123,25 +136,25 @@ fun MatchFoundScreen(navController: NavController) {
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Detalles del Partido:",
+                    text = "Estado del Match:",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Viernes 5 de junio - 19:30 hrs\nFutbolito Ñuñoa, Pedro de Valdivia", // Datos de ejemplo
+                    text = "El rival ha sido notificado.\nCoordinar fecha y cancha en el chat.",
                     color = TextoGris,
                     fontSize = 16.sp,
                     lineHeight = 24.sp
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Espacio flexible
+            Spacer(modifier = Modifier.weight(1f))
 
-            // Botones de Acción
+            // --- BOTONES ---
             Button(
-                onClick = {navController.navigate(Route.Chat.path)},
+                onClick = { navController.navigate(Route.Chat.path) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -158,6 +171,7 @@ fun MatchFoundScreen(navController: NavController) {
 
             OutlinedButton(
                 onClick = {
+                    viewModel.resetState() // Importante: Resetear al salir
                     navController.navigate(Route.Home.path) {
                         popUpTo(Route.Home.path) { inclusive = true }
                     }
