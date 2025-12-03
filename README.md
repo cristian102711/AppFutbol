@@ -25,4 +25,5 @@
 
 ## Evidencia de Entrega (APK y Llave)
 <img width="295" height="258" alt="image" src="https://github.com/user-attachments/assets/b9aeaf37-e346-43e6-aa3a-d9b051115da2" />
+<img width="1356" height="753" alt="image" src="https://github.com/user-attachments/assets/ef8231ca-53cc-4ab7-a37e-33f7139c47bf" />
 
