@@ -42,4 +42,42 @@ class EquipoViewModel(private val equipoRepository: EquipoRepository) : ViewMode
             }
         }
     }
+
+    // --- Nuevas acciones CRUD ---
+
+    fun createEquipo(equipo: Equipo) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = equipoRepository.createEquipo(equipo)
+            result.onSuccess {
+                loadEquipos()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al crear equipo: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun updateEquipo(equipo: Equipo) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = equipoRepository.updateEquipo(equipo)
+            result.onSuccess {
+                loadEquipos()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al actualizar equipo: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun deleteEquipo(id: Long) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = equipoRepository.deleteEquipo(id)
+            result.onSuccess {
+                loadEquipos()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al eliminar equipo: ${throwable.message}") }
+            }
+        }
+    }
 }

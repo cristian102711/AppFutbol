@@ -42,4 +42,42 @@ class JugadorViewModel(private val jugadorRepository: JugadorRepository) : ViewM
             }
         }
     }
+
+    // --- Nuevas acciones CRUD ---
+
+    fun createJugador(jugador: Jugador) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = jugadorRepository.createJugador(jugador)
+            result.onSuccess {
+                loadJugadores()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al crear jugador: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun updateJugador(jugador: Jugador) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = jugadorRepository.updateJugador(jugador)
+            result.onSuccess {
+                loadJugadores()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al actualizar jugador: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun deleteJugador(id: Long) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = jugadorRepository.deleteJugador(id)
+            result.onSuccess {
+                loadJugadores()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al eliminar jugador: ${throwable.message}") }
+            }
+        }
+    }
 }

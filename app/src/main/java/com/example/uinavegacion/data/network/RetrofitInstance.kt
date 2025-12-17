@@ -17,7 +17,7 @@ object RetrofitInstance {
 
     private val retrofitEquipos by lazy {
         Retrofit.Builder()
-            .baseUrl("https://ms-equipos.onrender.com/")
+            .baseUrl("https://ms-equipos.onrender.com")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -30,7 +30,7 @@ object RetrofitInstance {
 
     private val retrofitPartidos by lazy {
         Retrofit.Builder()
-            .baseUrl("https://ms-partidos.onrender.com/")
+            .baseUrl("https://ms-partidos.onrender.com")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -43,7 +43,7 @@ object RetrofitInstance {
 
     private val retrofitJugadores by lazy {
         Retrofit.Builder()
-            .baseUrl("https://ms-jugadores.onrender.com/")
+            .baseUrl("https://ms-jugadores.onrender.com")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -56,7 +56,7 @@ object RetrofitInstance {
 
     private val retrofitRivales by lazy {
         Retrofit.Builder()
-            .baseUrl("https://ms-rivales.onrender.com/")
+            .baseUrl("https://ms-rivales.onrender.com")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

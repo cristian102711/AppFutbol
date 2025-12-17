@@ -37,4 +37,42 @@ class RivalViewModel(private val rivalRepository: RivalRepository) : ViewModel()
             }
         }
     }
+
+    // --- Nuevas acciones CRUD ---
+
+    fun createRival(rival: Rival) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = rivalRepository.createRival(rival)
+            result.onSuccess {
+                fetchRivales()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al crear rival: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun updateRival(rival: Rival) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = rivalRepository.updateRival(rival)
+            result.onSuccess {
+                fetchRivales()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al actualizar rival: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun deleteRival(id: Long) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = rivalRepository.deleteRival(id)
+            result.onSuccess {
+                fetchRivales()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al eliminar rival: ${throwable.message}") }
+            }
+        }
+    }
 }

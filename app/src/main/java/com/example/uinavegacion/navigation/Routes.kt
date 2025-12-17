@@ -9,7 +9,8 @@ sealed class Route(val path: String) {
     object Home : Route("home_screen")
     object CreateTeam : Route("create_team_screen")
     object PlayerList : Route("player_list_screen")
-    object TeamList : Route("team_list_screen") // <-- AÑADIDO
+    object TeamList : Route("team_list_screen")
+    object MatchList : Route("match_list_screen")
 
     object Map : Route("map_screen")
 

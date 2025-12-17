@@ -1,0 +1,477 @@
+Subdirección de Diseño Instruccional
+2025 1 1
+Evaluación Final Transversal
+Presentación
+Instrucciones y pauta de evaluación
+Estudiante
+
+Sigla Nombre Asignatura Tiempo Asignado % Ponderación
+DSY1105 Desarrollo de Aplicaciones Móviles Semana 18 /15 min 80% del EFT
+
+1. Situación Evaluativa 1:
+X Presentación
+
+2. Instrucciones generales
+Descripción
+ La Evaluación Final Transversal corresponde a la entrega y defensa técnica de una aplicación móvil completamente funcional, desarrollada a
+partir de un caso o contexto real y/o simulado definido por el equipo de estudiantes. Donde el/la estudiante deberá demostrar criterios de
+calidad, coherencia visual, arquitectura técnica y funcionamiento completo, tanto en el frontend móvil como en su integración con servicios
+externos y backend.
+ Este producto final es el resultado de un proceso progresivo que comenzó en la Evaluación Parcial 2, centrada en el diseño y planificación
+técnica del proyecto, y continuó en la Evaluación Parcial 3, dedicada al desarrollo funcional e integración de componentes clave. En esta fase
+final, se espera que el proyecto refleje un dominio integral de las competencias adquiridas.
+Subdirección de Diseño Instruccional
+2025 2 2
+ El equipo deberá presentar una solución coherente, técnicamente sólida, funcional al momento de la evaluación, y que permita además
+realizar pruebas, ajustes y demostraciones en tiempo real.
+ Esta evaluación consiste en una defensa que medirá los siguientes Indicadores de Logro:
+ IL1.3 Desarrolla un programa orientado a objetos, respetando el patrón arquitectónico y utilizando principios de clases, herencia y
+polimorfismo, incluyendo el manejo de excepciones y verificando su correcto funcionamiento en un entorno de pruebas.
+ IL 2.3 Integra almacenamiento local y organiza la aplicación móvil usando patrones arquitectónicos y herramientas colaborativas para el desarrollo continuo
+de componentes visuales y funcionales, aportando al avance del proyecto y favoreciendo la mantenibilidad del código.
+ IL2.4 Implementa funciones de acceso a recursos nativos del dispositivo móvil, garantizando su correcto funcionamiento y su integración segura en la
+aplicación
+ IL3.1 Desarrolla una aplicación móvil funcional e integrada, conectando componentes de front-end y back-end mediante microservicios para garantizar
+coherencia y continuidad.
+ IL 3.2 Integra pruebas unitarias para validar el comportamiento esperado asegurando el correcto funcionamiento e integración segura.
+ IL3.3 Presenta la aplicación para su publicación mediante la generación del ejecutable firmado digitalmente, documentando el proceso con herramientas de
+planificación y control de versiones, en colaboración con el equipo.
+Aspectos formales:
+ La defensa es individual, con una duración máxima de 15 minutos por estudiante, durante la semana 18. El orden de presentación será aleatorio,
+por lo que todos/as deben estar preparados desde el inicio del período evaluativo.
+ La evaluación de la defensa/demostración es individual. Cada estudiante será calificado según su claridad, dominio del proyecto y capacidad
+para justificar decisiones, ejecutar la aplicación y modificar el código durante la defensa.
+ Si un/a estudiante no logra demostrar comprensión y control sobre el desarrollo, se asumirá que no participó activamente, lo que afectará
+directamente su nota, sin considerar el desempeño de su compañero/a ni la calidad general del proyecto.
+
+Atención: En caso de que el proyecto no se ejecute correctamente al momento de la defensa o presentación, no será posible evaluar los ítems
+posteriores al error. Por lo tanto, dichos ítems serán calificados con puntaje cero, ya que no se cumplirán los requerimientos mínimos necesarios
+para realizar pruebas, demostraciones o modificaciones al código.
+Subdirección de Diseño Instruccional
+2025 3 3
+Instrucciones específicas de la Evaluación
+Los/las estudiantes deberán haber realizado la entrega (obligatorio), previo a la presentación, según la solicitud de entrega.
+ A. En GitHub (público)
+B. En AVA (2 pasos)
+ Subida del proyecto grupal (un solo integrante lo sube).
+ Formulario individual: cada estudiante debe escribir su nombre completo, número de equipo y nombre del proyecto.
+ Si el formulario individual NO se completa en el plazo, el estudiante NO podrá defender el proyecto y obtendrá 1.0 como nota individual.
+o Penalizaciones:
+ Cambios al repositorio después de la fecha límite: 1.0 automático grupal e individual.
+ No entrega en AVA: 1.0 automático sin excepción.
+ Proyecto que no ejecuta: ítems posteriores no serán evaluados y obtendrán 0.
+Ítem I: Consideraciones para la Presentación (DEFENSA TÉCNICA INDIVIDUAL):
+
+Durante la defensa presencial, cada estudiante deberá explicar y ejecutar en tiempo real los elementos que construyó en la aplicación móvil,
+usando el computador del laboratorio y emulador o celular físico.
+El orden de presentación será asignado al azar por el docente.
+INICIO DEL PROYECTO Y CONFIGURACIÓN DEL ENTORNO
+ Abrir y ejecutar la app móvil desde Android Studio.
+ Verificar que funcione correctamente en el emulador o celular.
+ Explicar cómo fue configurado el entorno (emulador, dependencias, librerías).
+ Verificar también la ejecución del backend (microservicios Spring Boot).
+ESTRUCTURA DEL PROYECTO Y ARQUITECTURA GENERAL
+ Mostrar y explicar la organización del proyecto: carpetas, paquetes, archivos.
+ Justificar el uso de la arquitectura MVVM.
+ Describir las funciones de:
+Subdirección de Diseño Instruccional
+2025 4 4
+o ViewModel
+o Repository
+o Screens / Composables
+o Model
+ Mostrar también la estructura del proyecto backend (microservicios): entidades, controladores y rutas.
+DISEÑO VISUAL Y USABILIDAD
+ Justificar las decisiones visuales: colores, jerarquía, espaciado, navegación.
+ Mostrar cómo se aplicó Material Design 3.
+ Explicar cómo se consideraron la usabilidad, adaptabilidad y accesibilidad visual.
+FORMULARIOS Y VALIDACIÓN DE DATOS
+ Mostrar uno o más formularios implementados.
+ Explicar cómo se estructuró cada campo con sus respectivas validaciones.
+ Justificar por qué la validación se realizó fuera de la UI, usando lógica separada.
+ Ejecutar la app e ingresar datos erróneos para mostrar la retroalimentación visual (íconos, mensajes, colores).
+GESTIÓN DEL ESTADO Y RESPUESTA DINÁMICA DE LA UI
+ Explicar cómo se usaron State o StateFlow para manejar datos en tiempo real.
+ Justificar el uso de estructuras de control (if, when) y cómo afectan visualmente a la interfaz.
+ Mostrar cómo se actualiza la pantalla cuando cambian los datos.
+ANIMACIONES FUNCIONALES
+ Mostrar al menos una animación integrada (transición, loader, botón animado, etc.).
+ Explicar cómo se implementó (AnimatedVisibility, animate*AsState, etc.).
+ Justificar su uso como retroalimentación visual que mejora la experiencia del usuario.
+PERSISTENCIA LOCAL Y MODULARIDAD
+ Explicar cómo se implementó la persistencia de datos (ej. Room o DataStore).
+Subdirección de Diseño Instruccional
+2025 5 5
+ Mostrar cómo se estructura la clase DAO y las entidades.
+ Ejecutar una acción (ej. guardar o mostrar datos locales).
+ Justificar cómo está modularizado el proyecto (separación entre capas lógicas, visuales y de datos).
+RECURSOS NATIVOS DEL DISPOSITIVO
+ Mostrar cómo se integraron al menos dos recursos nativos (ej. cámara, galería, almacenamiento interno).
+ Explicar cómo se gestionaron los permisos (CAMERA, READ_EXTERNAL_STORAGE, etc.).
+ Ejecutar la funcionalidad en tiempo real (ej. tomar una foto y mostrarla en la interfaz).
+ Justificar el ajuste visual de ese recurso en la UI (bordes, tamaño, redondeo, etc.).
+MICROSERVICIOS DESARROLLADOS
+ Explicar cada microservicio construido: entidad, lógica y función.
+ Justificar los endpoints creados (GET, POST, PUT, DELETE) y mostrar su integración desde la app móvil.
+ Mostrar un ejemplo real de consumo de microservicio desde la app (ej. agregar usuario, editar, eliminar).
+CONSUMO DE API EXTERNA
+ Mostrar en la app la información obtenida desde una API pública (ej. países, clima, noticias).
+ Explicar cómo se creó el RetrofitService y su diferencia con los microservicios propios.
+ Justificar cómo se integró esa API al flujo visual de la app.
+PRUEBAS UNITARIAS
+ Ejecutar al menos una prueba unitaria real en vivo.
+ Explicar cuál es la lógica que se está probando.
+ Justificar qué se "mockea" y qué se espera como resultado.
+ Explicar cómo esto aporta a la seguridad, confiabilidad y mantenimiento del código
+FIRMA Y GENERACIÓN DEL APK
+ Mostrar el archivo .apk firmado.
+ Explicar paso a paso cómo se generó (uso de .jks, configuración en build.gradle).
+ Justificar su importancia para distribución en dispositivos reales.
+COLABORACIÓN EN EL PROYECTO
+Subdirección de Diseño Instruccional
+2025 6 6
+ Mostrar en GitHub la participación individual (commits, ramas).
+ Explicar tareas propias en el equipo y planificación compartida (Trello).
+ Justificar cómo se distribuyó el trabajo y cómo se coordinaron.
+MODIFICACIÓN EN TIEMPO REAL
+Ante la indicación del docente, el/la estudiante deberá:
+ Agregar una nueva validación o campo a un formulario ya creado.
+ Crear o ajustar una función visual (Composable) o lógica (ViewModel).
+ Añadir un nuevo componente (Card, Button, LazyColumn, etc.).
+ Demostrar dominio y comprensión del código ejecutado.
+ CIERRE DE LA DEFENSA
+ El/la docente podrá hacer preguntas adicionales si considera necesario.
+ CONSIDERACIONES GENERALES PARA TODOS LOS ESTUDIANTES:
+ Puedes pedir que se repita la pregunta si no la comprendes a la primera.
+ Puedes escribir en una hoja los pasos a seguir antes de ejecutarlos.
+ El/la docente evaluará tanto lo que haces como lo que explicas.
+ No se permite el uso de IA ni materiales de apoyo externos durante la defensa.
+ Si un recurso no está implementado correctamente o no puede ser demostrado, todos los ítems relacionados se calificarán con 0 sin
+excepción.
+Los aspectos formales son:
+ La defensa se realiza de forma presencial en laboratorio o sala equipada con computador y deberán configurar y ejecutar su proyecto en
+el emulador o dispositivo físico.
+ El/la estudiante de manera individual y sin ayuda defenderá el proyecto entregado.
+ El/la docente definirá el orden al azar y la sesión de su defensa.
+Subdirección de Diseño Instruccional
+2025 7 7
+3. Pauta de Evaluación
+Categoría % logro Descripción niveles de logro
+Muy buen desempeño 100% Demuestra un desempeño destacado, evidenciando el logro de todos los aspectos evaluados en el indicador.
+Desempeño aceptable 60% Demuestra un desempeño competente, evidenciando el logro de los elementos básicos del indicador, pero con
+omisiones, dificultades o errores.
+Desempeño incipiente 30% Presenta importantes omisiones, dificultades o errores en el desempeño, que no permiten evidenciar los
+elementos básicos del logro del indicador, por lo que no puede ser considerado competente.
+Desempeño no logrado 0% Presenta ausencia o incorrecto desempeño.
+Indicador de Evaluación
+Categorías de Respuesta
+Ponderación
+Indicador de
+Evaluación
+Muy buen desempeño
+100%
+Desempeño aceptable
+60%
+Desempeño
+incipiente
+30%
+Desempeño no
+logrado
+0%
+Dimensión: Presentación
+IE1.3.1 Gestiona correctamente
+excepciones en la ejecución del
+programa, demostrando su impacto
+en el funcionamiento mediante
+pruebas y validaciones controladas
+Gestiona excepciones específicas
+mediante bloques try-catch,
+validando errores controlados y
+mostrando mensajes claros en la
+interfaz.
+Gestiona excepciones con
+estructura clara, pero sin
+validaciones
+contextualizadas o sin
+mostrar feedback al usuario.
+Implementa bloques
+de control de errores
+genéricos o sin impacto
+real en el
+funcionamiento.
+Aplica validaciones
+básicas sin capturar ni
+manejar excepciones
+formales o no las
+gestiona.
+4%
+IE 2.3.1 Demuestra presencialmente
+la implementación o modificación de
+una función de almacenamiento
+local, explicando cómo se guardan y
+recuperan datos de manera
+funcional.
+Demuestra la implementación o
+modificación de una función de
+almacenamiento local en vivo,
+explicando claramente cómo se
+gestionan los datos (insertar,
+actualizar, recuperar) de forma
+coherente.
+Explica en términos
+generales la función, pero
+presenta dificultad para
+demostrar la modificación o
+no detalla correctamente la
+lógica de persistencia.
+-
+No logra explicar ni
+modificar funciones de
+persistencia, o
+desconoce cómo opera
+el almacenamiento
+local.
+5%
+IE 2.3.2 Explica la estructura
+arquitectónica de su aplicación y la
+implementación del
+almacenamiento local, justificando el
+uso de patrones, herramientas
+Explica con precisión la arquitectura
+del proyecto (como MVVM), justifica
+el uso de herramientas como GitHub
+o Trello y explica cómo su estructura
+-
+Explica de forma
+parcial la arquitectura y
+herramientas
+utilizadas, con poca
+claridad sobre su
+No logra explicar la
+arquitectura, ni
+justificar el uso de
+herramientas
+colaborativas o
+5%
+Subdirección de Diseño Instruccional
+2025 8 8
+colaborativas y decisiones de
+organización que favorecen la
+mantenibilidad y el desarrollo
+continuo del proyecto.
+favorece la mantenibilidad del
+código.
+impacto en la
+organización o
+mantenibilidad.
+decisiones
+organizativas.
+IE 2.4.1 Explica cómo integró el
+acceso a recursos nativos del
+dispositivo en su aplicación,
+detallando el uso de permisos, flujos
+de integración y medidas aplicadas
+para garantizar su funcionamiento
+correcto y seguro
+Explica correctamente cómo integró
+los recursos nativos, qué permisos
+utilizó, cómo gestionó el flujo de uso
+y qué medidas tomó para asegurar su
+funcionamiento.
+-
+La explicación es
+parcial o ambigua, con
+poca claridad sobre
+permisos o el flujo de
+integración.
+No explica
+correctamente la
+integración de recursos
+nativos, o desconoce
+cómo se gestionan
+permisos y flujos.
+5%
+IE 2.4.2 Demuestra en tiempo real el
+resultado del recurso nativo dentro
+de la interfaz, ajustando su
+presentación o lógica de carga.
+Ejecuta correctamente el recurso
+nativo y ajusta su presentación de
+manera coherente con la UI.
+-
+El recurso se ejecuta,
+pero con fallos de
+presentación o una
+lógica poco clara en su
+integración visual.
+No logra ejecutar o
+mostrar
+adecuadamente el
+recurso nativo dentro
+de la interfaz.
+5%
+IE 3.1.1 Demuestra dominio técnico
+del diseño visual de su aplicación,
+explicando y justificando la
+estructura de las interfaces, la
+navegación entre componentes, la
+integración de formularios validados
+y los principios de usabilidad
+aplicados, mediante la ejecución en
+tiempo real del proyecto entregado.
+Demuestra con claridad y precisión la
+estructura visual del proyecto,
+justifica el diseño, navegación e
+integración de formularios, y
+evidencia dominio en la ejecución del
+flujo visual durante la defensa.
+-
+Responde con
+generalidades, sin
+justificar
+completamente las
+decisiones visuales o
+sin demostrar
+ejecución fluida
+durante la
+presentación.
+No explica ni ejecuta
+correctamente la
+estructura visual,
+navegación o
+integración de
+formularios.
+5%
+IE 3.1.2 Explica con claridad la
+estructura y lógica del backend
+desarrollado, relacionando
+entidades, controladores y rutas con
+el consumo de endpoints desde la
+aplicación móvil, identificando
+funciones, parámetros y flujo de
+integración.
+Describe de forma detallada las
+entidades, controladores, rutas y la
+lógica general del backend,
+mostrando cómo se consumen
+correctamente desde la app móvil.
+Explica la estructura del
+backend en términos
+generales, pero omite
+relaciones clave o detalles
+técnicos específicos.
+-
+Describe solo una parte
+del backend sin
+establecer conexiones
+claras con la app móvil.
+7%
+IE 3.1.3 Construye un nuevo
+formulario o componente visual con
+validaciones propias, integrándolo
+correctamente al flujo existente de la
+aplicación, demostrando dominio del
+diseño funcional y la lógica de
+interacción.
+Construye un formulario funcional,
+con validaciones por campo, diseño
+adaptado al flujo de la aplicación y
+retroalimentación visual clara.
+-
+Construye el
+formulario con
+validaciones básicas,
+pero sin conexión
+completa al flujo o sin
+ajustes visuales claros.
+Construye el formulario
+con errores de
+validación o integración
+parcial.
+12%
+IE 3.1.4 Demuestra en tiempo real la
+modificación o ajuste de una
+Demuestra correctamente una
+integración nueva o modificación -
+Demuestra la
+realización de la
+Intenta integrar o
+modificar, pero no logra 20%
+Subdirección de Diseño Instruccional
+2025 9 9
+funcionalidad de la aplicación móvil
+que afecta su comportamiento, así
+como el de los microservicios o la
+base de datos, evidenciando dominio
+técnico.
+funcional que afecta la aplicación
+móvil, la base de datos y
+microservicios, evidenciando
+dominio técnico.
+integración o
+modificación, pero esta
+presenta errores
+menores y/o necesita
+apoyo para la
+realización y dominio.
+ejecutar el cambio
+correctamente.
+IE 3.2.1 Explica cómo las pruebas
+unitarias implementadas
+contribuyen a la seguridad,
+estabilidad y confiabilidad de la
+aplicación.
+Explica con claridad el rol de las
+pruebas y cómo apoyan la calidad del
+software.
+- -
+Explica de manera
+parcial y esta
+justificación no tienen
+relación técnica sólida.
+5%
+IE 3.2.2 Demuestra la ejecución de
+una prueba unitaria, explicando su
+propósito, implementación y
+validación del resultado.
+Demuestra la ejecución de una
+prueba funcional en tiempo real,
+explicando cada paso y validando su
+resultado correctamente.
+-
+Demuestra la prueba
+funcional, pero esta
+presenta errores
+menores y/o la explica
+parcialmente.
+Realiza una prueba con
+errores graves o sin
+validación funcional
+impidiendo que pueda
+ejecutarla.
+15%
+IE 3.3.1 Explica paso a paso el
+proceso de generación del APK
+firmado, detallando la configuración
+necesaria para su publicación.
+Explica detalladamente cada paso
+técnico para generar y firmar el APK. - -
+Explica los pasos
+generales, pero sin
+claridad técnica
+completa.
+5%
+IE 3.3.2 Expone su participación
+técnica en el desarrollo grupal,
+mostrando evidencia de sus aportes
+en GitHub y Trello
+Expone su participación técnica en el
+desarrollo grupal, evidenciando
+claramente sus contribuciones
+técnicas en GitHub y Trello.
+- -
+Justificación poco clara
+o con baja participación
+técnica.
+7%
+Total 100% 

@@ -49,4 +49,43 @@ class PartidoViewModel(private val partidoRepository: PartidoRepository) : ViewM
             }
         }
     }
+
+    // --- Nuevas acciones CRUD expuestas por el ViewModel ---
+
+    fun createPartido(partido: Partido) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = partidoRepository.createPartido(partido)
+            result.onSuccess {
+                // Refrescar lista en caso de éxito
+                loadPartidos()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al crear partido: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun updatePartido(partido: Partido) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = partidoRepository.updatePartido(partido)
+            result.onSuccess {
+                loadPartidos()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al actualizar partido: ${throwable.message}") }
+            }
+        }
+    }
+
+    fun deletePartido(id: Long) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            val result = partidoRepository.deletePartido(id)
+            result.onSuccess {
+                loadPartidos()
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = "Error al eliminar partido: ${throwable.message}") }
+            }
+        }
+    }
 }

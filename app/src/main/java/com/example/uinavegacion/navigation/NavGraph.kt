@@ -15,6 +15,7 @@ import com.example.uinavegacion.ui.screen.CreateTeamScreen
 import com.example.uinavegacion.ui.screen.HomeScreen
 import com.example.uinavegacion.ui.screen.LoginScreen
 import com.example.uinavegacion.ui.screen.MatchFoundScreen
+import com.example.uinavegacion.ui.screen.MatchListScreen
 import com.example.uinavegacion.ui.screen.MatchmakingScreen
 import com.example.uinavegacion.ui.screen.MatchmakingStartScreen
 import com.example.uinavegacion.ui.screen.PlayerListScreen
@@ -56,6 +57,7 @@ fun NavGraph(
         composable(Route.PlayerList.path) { PlayerListScreen(jugadorViewModel) }
         composable(Route.TeamList.path) { TeamListScreen(equipoViewModel) }
         composable(Route.RivalList.path) { RivalListScreen(rivalViewModel) }
+        composable(Route.MatchList.path) { MatchListScreen(partidoViewModel) }
 
         // --- Creación ---
         composable(Route.CreateMatch.path) { CreateMatchScreen(navController, createMatchViewModel) }
